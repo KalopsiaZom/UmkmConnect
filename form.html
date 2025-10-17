@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barang</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Input Barang</h2>
+    <form method="post" action="/simpan">
+        <label for="nama">Nama Barang:</label><br>
+        <input type="text" id="nama" name="nama_barang"><br><br>
+
+        <label for="jumlah">Jumlah:</label><br>
+        <input type="number" id="jumlah" name="jumlah"><br><br>
+
+        <label for="kategori">Kategori:</label><br>
+        <select name="kategori" id="kategori">
+            <option value="Elektronik">Elektronik</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Alat Tulis">Alat Tulis</option>
+            <option value="Lainnya">Lainnya</option>
+        </select><br><br>
+
+        <label for="kondisi">Kondisi:</label><br>
+        <Select id="kondisi" name="kondisi">
+            <option value="Baik">Baik</option>
+            <option value="Rusak">Rusak</option>
+            <option value="Hilang">Hilang</option>
+        </Select><br><br>
+
+        <label for="lokasi">Lokasi:</label>
+        <input type="text" id="lokasi" name="lokasi"><br><br>
+
+        <input type="submit" value="Simpan">
+    </form>
+</body>
+</html>
