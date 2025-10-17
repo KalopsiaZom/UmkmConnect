@@ -25,7 +25,7 @@ function editData(req, res, id) {
             <link rel="stylesheet" href="/style.css">
         </head>
         <body>
-                <h2>Edit Barangz</h2>
+                <h2>Edit Barang</h2>
                 <form method="post" action="/update">
                     <input type="hidden" name="id_barang" value="${item.id_barang}">
                     <label for="nama">Nama Barang:</label><br>
