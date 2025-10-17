@@ -1,6 +1,6 @@
 const pool = require('./koneksi');
 
-const hapusBarang = async (res, id) => {
+const hapusBarang = async (req, res, id) => {
     try {
         const sql = "DELETE FROM ms_barang WHERE id_barang = ?";
         await pool.query(sql, [id]);
