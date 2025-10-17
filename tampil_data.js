@@ -33,8 +33,9 @@ const tampilBarang = (res) => {
             });
 
             res.write("</table>");
+            res.end();
         }
-        res.end();
+        
     });
 }
 
