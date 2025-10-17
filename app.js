@@ -20,7 +20,7 @@ module.exports = (req, res) => {
         editBarang.updateBarang(req, res); 
     } 
     else if (req.method === 'GET' && req.url === '/style.css') {
-        fs.readFile('style.css', (err, css) => {
+        fs.readFile(__dirname + '/style.css', (err, css) => {
             if (err) {
                 res.writeHead(404);
                 return res.end('CSS not found');
@@ -28,10 +28,9 @@ module.exports = (req, res) => {
             res.writeHead(200, { 'Content-Type': 'text/css' });
             res.end(css);
         });
-    } 
-    else {
+    } else {
         res.writeHead(200, { 'Content-Type': 'text/html' });
-        fs.readFile("form.html", (err, data) => {
+        fs.readFile(__dirname + "/form.html", (err, data) => {
             if (err) {
                 res.write("Error loading form");
                 res.end();
@@ -41,4 +40,5 @@ module.exports = (req, res) => {
             }
         });
     }
+
 };
