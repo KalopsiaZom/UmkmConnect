@@ -1,27 +1,36 @@
+const pool = require('./koneksi');
 const querystring = require('querystring');
-const conn = require('./koneksi');
 
-const simpanBarang = (req, res) => {
-    let data = '';
-
-    req.on('data', chunk => {
-        data += chunk;
-    });
-
-    req.on('end', () => {
-        const formData = querystring.parse(data);
-
-        const sql = "INSERT INTO ms_barang (nama_barang, jumlah, kategori, kondisi, lokasi) VALUES (?, ?, ?, ?, ?)";
-        conn.query(sql, [formData.nama_barang, formData.jumlah, formData.kategori, formData.kondisi, formData.lokasi], (err) => {
-            if (err){
-                res.write("Gagal simpan");
-                res.end();
-            } else {
-                res.writeHead(302, { 'Location': '/' });
-                res.end();
-            }
+const simpanBarang = async (req, res) => {
+    try {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
         });
-    });
+
+        req.on('end', async () => {
+            const data = querystring.parse(body);
+            const sql = `
+                INSERT INTO ms_barang (nama_barang, jumlah, kategori, kondisi, lokasi)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            await pool.query(sql, [
+                data.nama_barang,
+                data.jumlah,
+                data.kategori,
+                data.kondisi,
+                data.lokasi
+            ]);
+
+            res.writeHead(302, { Location: '/' });
+            res.end();
+        });
+    } catch (err) {
+        console.error("Insert error:", err);
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Database insert error');
+    }
 };
 
 module.exports = simpanBarang;
