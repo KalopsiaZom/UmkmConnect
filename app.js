@@ -22,6 +22,16 @@ module.exports = async (req, res) => {
         res.end(css);
         });
     } 
+    else if (req.method === "GET" && req.url === '/dashboard.css') {
+        fs.readFile(path.join(__dirname, 'frontend', 'dashboard.css'), (err, css) => {
+        if (err) {
+            res.writeHead(404);
+            return res.end('CSS not found');
+        }
+        res.writeHead(200, { 'Content-Type': 'text/css' });
+        res.end(css);
+        });
+    } 
     else if (req.method === "GET" && req.url === '/register.html') {
         fs.readFile(path.join(__dirname, 'frontend', 'register.html'), (err, html) => {
         if (err) {
