@@ -53,7 +53,7 @@
           </tr>
         </thead>
         <tbody>
-            
+
         </tbody>
       </table>
 
@@ -71,7 +71,7 @@
     });
 
     async function loadBarang() {
-        const response = await fetch("http://localhost:3000/barang");
+        const response = await fetch("../api/users");
         const barang = await response.json();
 
         const tbody = document.querySelector("tbody");

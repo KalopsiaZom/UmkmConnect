@@ -1,15 +1,7 @@
-const conn = require("./koneksi");
+// /lib/admin.js
+import { conn } from "./koneksi.js";
 
-function tampilBarang(callback) {
-  const sql = "SELECT * FROM users";
-
-  conn.query(sql, (err, results) => {
-    if (err) {
-      callback(err, null);
-    } else {
-      callback(null, results);
-    }
-  });
+export async function tampilUsers() {
+  const [rows] = await conn.execute("SELECT * FROM users");
+  return rows;
 }
-
-module.exports = tampilBarang;
