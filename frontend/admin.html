@@ -69,30 +69,6 @@
     document.getElementById("backBtn").addEventListener("click", () => {;
         window.location.href = "/dashboard.html";
     });
-
-    async function loadUsers() {
-        const response = await fetch("/api/users");
-        const users = await response.json();
-
-        const tbody = document.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        users.forEach(user => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-            <td>${user.username}</td>
-            <td>${user.id}</td>
-            <td>${user.role}</td>
-            <td>${user.email}</td>
-            <td><a href="/delete/${user.id}">Hapus</a></td>
-            <td><a href="/edit/${user.id}">Edit</a></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    loadUsers();
-
   </script>
 </body>
 </html>
