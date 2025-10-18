@@ -1,10 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <h1>Welcome Admin</h1>
-  <p>You can manage users or data here.</p>
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>🛠️ Admin</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Docs</a>
+      <a href="#">Users</a>
+      <a href="#">Media</a>
+      <a href="#">Pages</a>
+      <a href="#">Tools</a>
+      <a href="#">Database</a>
+      <a href="#">Settings</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div class="breadcrumbs">
+        <span>Dashboard</span> /
+        <span class="active">Database</span>
+      </div>
+      <div class="user-icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User">
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="content-header">
+        <h1>Database</h1>
+        <button class="btn-green">+ Create New Table</button>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Table Name</th>
+            <th>Last Updated</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>users</td>
+            <td>2 days ago</td>
+            <td><span class="status online">Online</span></td>
+          </tr>
+          <tr>
+            <td>posts</td>
+            <td>1 week ago</td>
+            <td><span class="status offline">Offline</span></td>
+          </tr>
+          <tr>
+            <td>permissions</td>
+            <td>3 hours ago</td>
+            <td><span class="status online">Online</span></td>
+          </tr>
+          <tr>
+            <td>menu_items</td>
+            <td>1 month ago</td>
+            <td><span class="status offline">Offline</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
 </body>
 </html>
