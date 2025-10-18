@@ -70,28 +70,29 @@
         window.location.href = "/dashboard.html";
     });
 
-    async function loadBarang() {
-        const response = await fetch("../api/users");
-        const barang = await response.json();
+    async function loadUsers() {
+        const response = await fetch("/api/users");
+        const users = await response.json();
 
         const tbody = document.querySelector("tbody");
         tbody.innerHTML = "";
 
-        barang.forEach(item => {
+        users.forEach(user => {
             const row = document.createElement("tr");
             row.innerHTML = `
-            <td>${item.username}</td>
-            <td>${item.id}</td>
-            <td>${item.role}</td>
-            <td>${item.email}</td>
-            <td><a href="/delete/${item.id_barang}">Hapus</a></td>
-            <td><a href="/edit/${item.id_barang}">Edit</a></td>
+            <td>${user.username}</td>
+            <td>${user.id}</td>
+            <td>${user.role}</td>
+            <td>${user.email}</td>
+            <td><a href="/delete/${user.id}">Hapus</a></td>
+            <td><a href="/edit/${user.id}">Edit</a></td>
             `;
             tbody.appendChild(row);
         });
     }
 
-    loadBarang();
+    loadUsers();
+
   </script>
 </body>
 </html>

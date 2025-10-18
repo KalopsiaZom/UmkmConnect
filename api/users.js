@@ -1,12 +1,15 @@
-// /api/users.js
-import { tampilUsers } from "../backend/admin";
+const express = require('express');
+const router = express.Router();
+const pool = require('../backend/koneksi'); // connect to MySQL
 
-export default async function handler(req, res) {
+router.get('/', async (req, res) => {
   try {
-    const users = await tampilUsers();
-    res.status(200).json(users);
+    const [rows] = await pool.query('SELECT id, username, role, email FROM users');
+    res.json(rows);
   } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).json({ error: "Failed to fetch users" });
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
   }
-}
+});
+
+module.exports = router;
