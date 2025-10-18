@@ -49,7 +49,7 @@
             <th>ID</th>
             <th>Role</th>
             <th>Email</th>
-            <th colspan="3" style="text-align: center;">Action</th>
+            <th style="text-align: center;">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -85,9 +85,11 @@
                 <td>${user.id || user.id_user || "-"}</td>
                 <td>${user.role || "-"}</td>
                 <td>${user.email || "-"}</td>
-                <td><button class="btn-green" onclick="window.location.href='edit.html?id=${user.id}'">Edit</button></td>
-                <td><button class="btn-blue2">Information</button></td>
-                <td><button class="btn-red" onclick="deleteUser(${user.id})">Delete</button></td>
+                <td class="action-buttons">
+                    <button class="btn-green" onclick="window.location.href='edit.html?id=${user.id}'">Edit</button>
+                    <button class="btn-blue2">Information</button>
+                    <button class="btn-red" onclick="deleteUser(${user.id})">Delete</button>
+                </td>
             `;
             tbody.appendChild(row);
             });

@@ -118,6 +118,20 @@ body {
   background: #e6ebf3;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 8px; 
+  justify-content: center; 
+  align-items: center;
+}
+
+.action-buttons button {
+  flex: none;
+  width: auto;
+  min-width: 80px;
+}
+
+
 .btn-blue {
   background: #1b56db;
   color: white;
@@ -131,7 +145,6 @@ body {
 
 .btn-blue2 {
   background: #1b56db;
-  width: 40%;
   color: white;
   border: none;
   padding: 9px 16px;
@@ -143,7 +156,6 @@ body {
 
 .btn-green {
   background: green;
-  width: 40%;
   color: white;
   border: none;
   padding: 9px 16px;
@@ -155,7 +167,6 @@ body {
 
 .btn-red {
   background: red;
-  width: 40%;
   color: white;
   border: none;
   padding: 9px 16px;
