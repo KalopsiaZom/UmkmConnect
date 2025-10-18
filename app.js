@@ -64,6 +64,18 @@ module.exports = async (req, res) => {
     });
   }
 
+else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
+  fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
+    if (err) {
+      res.writeHead(404);
+      return res.end('File not found');
+    }
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(html);
+  });
+}
+
+
   // --- CSS FILES ---
   else if (req.method === "GET" && req.url.endsWith(".css")) {
     const cssPath = path.join(__dirname, 'frontend', req.url);
