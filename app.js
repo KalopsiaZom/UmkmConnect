@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const registerUser = require('./backend/register');
 const loginUser = require('./backend/login');
-const __dirname = path.resolve();
 
 module.exports = async (req, res) => {
   const urlsplit = req.url.split('/');
