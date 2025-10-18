@@ -7,72 +7,88 @@
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-
   <aside class="sidebar">
-    <div class="sidebar-header">
-      <h2>🛠️ Admin</h2>
+    <div class="logo">
+      <h2>⚙️ X-Admin</h2>
     </div>
-    <nav class="sidebar-nav">
-      <a href="#" class="active">Dashboard</a>
-      <a href="#">Docs</a>
-      <a href="#">Users</a>
-      <a href="#">Media</a>
-      <a href="#">Pages</a>
-      <a href="#">Tools</a>
-      <a href="#">Database</a>
-      <a href="#">Settings</a>
+
+    <nav>
+      <h3>GENERAL</h3>
+      <a href="#" class="active">Users</a>
+      <a href="#">Office Map</a>
+
+      <h3>SETTINGS</h3>
+      <a href="#">Security</a>
+      <a href="#">Backups</a>
     </nav>
   </aside>
 
-  <div class="main-content">
+  <main class="main-content">
     <header class="topbar">
-      <div class="breadcrumbs">
-        <span>Dashboard</span> /
-        <span class="active">Database</span>
+      <div class="search-container">
+        <input type="text" placeholder="Search user...">
+        <select>
+          <option>All Users</option>
+          <option>Online</option>
+          <option>Offline</option>
+        </select>
       </div>
-      <div class="user-icon">
-        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User">
+
+      <div class="topbar-actions">
+        <button class="btn-outline">Import/Export</button>
+        <button class="btn-blue">+ Add User</button>
       </div>
     </header>
 
-    <section class="content">
-      <div class="content-header">
-        <h1>Database</h1>
-        <button class="btn-green">+ Create New Table</button>
-      </div>
-
-      <table class="data-table">
+    <section class="table-section">
+      <table>
         <thead>
           <tr>
-            <th>Table Name</th>
-            <th>Last Updated</th>
-            <th>Status</th>
+            <th>User</th>
+            <th>ID</th>
+            <th>Role</th>
+            <th>Seat</th>
+            <th>Email</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>users</td>
-            <td>2 days ago</td>
-            <td><span class="status online">Online</span></td>
+            <td><img src="https://i.pravatar.cc/32?img=1"> <span>Roy Couvillon</span></td>
+            <td>0478265</td>
+            <td>Applications Analyst</td>
+            <td>71</td>
+            <td>roy@example.com</td>
           </tr>
           <tr>
-            <td>posts</td>
-            <td>1 week ago</td>
-            <td><span class="status offline">Offline</span></td>
+            <td><img src="https://i.pravatar.cc/32?img=2"> <span>Sebastian Szablade</span></td>
+            <td>0189244</td>
+            <td>Computer Systems Analyst</td>
+            <td>78</td>
+            <td>sebastian@example.com</td>
           </tr>
           <tr>
-            <td>permissions</td>
-            <td>3 hours ago</td>
-            <td><span class="status online">Online</span></td>
+            <td><img src="https://i.pravatar.cc/32?img=3"> <span>Chris Altman</span></td>
+            <td>0218562</td>
+            <td>Software Engineer</td>
+            <td>75</td>
+            <td>chris.altman@example.com</td>
           </tr>
           <tr>
-            <td>menu_items</td>
-            <td>1 month ago</td>
-            <td><span class="status offline">Offline</span></td>
+            <td><img src="https://i.pravatar.cc/32?img=4"> <span>Martha Housand</span></td>
+            <td>0581360</td>
+            <td>Information Systems Analyst</td>
+            <td>74</td>
+            <td>martha@example.com</td>
           </tr>
         </tbody>
       </table>
+
+      <div class="pagination">
+        <button>← Previous</button>
+        <span>1</span>
+        <button>Next →</button>
+      </div>
     </section>
-  </div>
+  </main>
 </body>
 </html>
