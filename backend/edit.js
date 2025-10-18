@@ -51,7 +51,7 @@ form.addEventListener("submit", async (e) => {
 
 // Cancel button
 cancelBtn.addEventListener("click", () => {
-  window.location.href = "admin.html";
+  window.location.href = "/admin.html";
 });
 
 loadUser();
