@@ -48,42 +48,12 @@
             <th>User</th>
             <th>ID</th>
             <th>Role</th>
-            <th>Seat</th>
             <th>Email</th>
             <th colspan="2">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><img src="https://i.pravatar.cc/32?img=1"> <span>Roy Couvillon</span></td>
-            <td>0478265</td>
-            <td>Applications Analyst</td>
-            <td>71</td>
-            <td>roy@example.com</td>
-            <td><img src="https://github.com/KalopsiaZom/UmkmConnect/blob/main/public/img/edit-button.png" alt="edit"></td>
-            <td><img src="/img/bin.png" alt="edit"></td>
-          </tr>
-          <tr>
-            <td><img src="https://i.pravatar.cc/32?img=2"> <span>Sebastian Szablade</span></td>
-            <td>0189244</td>
-            <td>Computer Systems Analyst</td>
-            <td>78</td>
-            <td>sebastian@example.com</td>
-          </tr>
-          <tr>
-            <td><img src="https://i.pravatar.cc/32?img=3"> <span>Chris Altman</span></td>
-            <td>0218562</td>
-            <td>Software Engineer</td>
-            <td>75</td>
-            <td>chris.altman@example.com</td>
-          </tr>
-          <tr>
-            <td><img src="https://i.pravatar.cc/32?img=4"> <span>Martha Housand</span></td>
-            <td>0581360</td>
-            <td>Information Systems Analyst</td>
-            <td>74</td>
-            <td>martha@example.com</td>
-          </tr>
+            
         </tbody>
       </table>
 
@@ -99,6 +69,29 @@
     document.getElementById("backBtn").addEventListener("click", () => {;
         window.location.href = "/dashboard.html";
     });
+
+    async function loadBarang() {
+        const response = await fetch("http://localhost:3000/barang");
+        const barang = await response.json();
+
+        const tbody = document.querySelector("tbody");
+        tbody.innerHTML = "";
+
+        barang.forEach(item => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${item.username}</td>
+            <td>${item.id}</td>
+            <td>${item.role}</td>
+            <td>${item.email}</td>
+            <td><a href="/delete/${item.id_barang}">Hapus</a></td>
+            <td><a href="/edit/${item.id_barang}">Edit</a></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    loadBarang();
   </script>
 </body>
 </html>
