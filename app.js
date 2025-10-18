@@ -3,6 +3,9 @@ const path = require('path');
 const registerUser = require('./backend/register');
 const loginUser = require('./backend/login');
 
+const tampilUsers = require('./backend/admin'); // 👈 add this (your query file)
+const koneksi = require('./backend/koneksi');
+
 module.exports = async (req, res) => {
     const urlsplit = req.url.split('/');
 
@@ -12,6 +15,17 @@ module.exports = async (req, res) => {
     else if (req.method === "POST" && urlsplit[1] === "login") {
         return loginUser(req, res);
     } 
+
+  else if (req.method === "GET" && req.url === "/api/users") {
+    tampilUsers((err, results) => {
+      if (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ error: "Database error", details: err.message }));
+      }
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(results));
+    });
+  }
 
     //CSS serving
     else if (req.method === "GET" && req.url === '/style.css') {
