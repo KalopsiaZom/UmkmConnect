@@ -1,14 +1,12 @@
 const conn = require("./koneksi");
 
-function tampilUsers(callback) {
-  const sql = "SELECT * FROM users";
-  conn.query(sql, (err, results) => {
-    if (err) {
-      callback(err, null);
-    } else {
-      callback(null, results);
-    }
-  });
+async function tampilUsers(callback) {
+  try {
+    const [results] = await conn.query("SELECT * FROM users");
+    callback(null, results);
+  } catch (err) {
+    callback(err, null);
+  }
 }
 
 module.exports = tampilUsers;
