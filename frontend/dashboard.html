@@ -10,14 +10,11 @@
   <h1>Welcome to Dashboard</h1>
   <p id="welcome"></p>
 
-  <!-- Admin-only button -->
   <button id="adminBtn" style="display: none;">Admin Control Panel</button>
 
-  <!-- Shared actions -->
   <button id="logoutBtn">Logout</button>
 
   <script>
-    // When dashboard loads, check the role
     window.onload = () => {
       const role = localStorage.getItem("role");
       const username = localStorage.getItem("username");
@@ -31,19 +28,16 @@
       document.getElementById("welcome").textContent = 
         `Welcome, ${username}! You are logged in as ${role}.`;
 
-      // Show admin-only button
       if (role === "admin") {
         document.getElementById("adminBtn").style.display = "inline-block";
       }
     };
 
-    // Logout clears session info
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.clear();
       window.location.href = "/login.html";
     });
 
-    // Optional: go to admin panel
     document.getElementById("adminBtn").addEventListener("click", () => {
       window.location.href = "/admin.html";
     });

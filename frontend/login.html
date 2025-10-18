@@ -30,7 +30,6 @@
       const data = await res.json();
 
       if (res.status === 200) {
-        // Save role to localStorage so dashboard can know who is who
         localStorage.setItem("role", data.role);
         localStorage.setItem("username", username);
         window.location.href = "/dashboard.html";
