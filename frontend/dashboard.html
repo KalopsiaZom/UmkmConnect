@@ -7,12 +7,51 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Welcome to Dashboard</h1>
-  <p id="welcome"></p>
+  <div class="sidebar">
+    <h2>Creative Tim</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">User Profile</a>
+    <a href="#">Table List</a>
+    <a href="#">Typography</a>
+    <a href="#">Icons</a>
+    <a href="#">Maps</a>
+    <a href="#">Notifications</a>
+  </div>
 
-  <button id="adminBtn" style="display: none;">Admin Control Panel</button>
+  <div class="main-content">
+    <div class="header">
+      <h1>Material Dashboard</h1>
+      <div class="buttons">
+        <button id="adminBtn" style="display:none;">Admin Panel</button>
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </div>
 
-  <button id="logoutBtn">Logout</button>
+    <div class="dashboard">
+      <div class="card orange">
+        <h3>Used Space</h3>
+        <p class="value">49/50 GB</p>
+        <small>Get More Space...</small>
+      </div>
+      <div class="card green">
+        <h3>Revenue</h3>
+        <p class="value">$34,245</p>
+        <small>Last 24 Hours</small>
+      </div>
+      <div class="card red">
+        <h3>Fixed Issues</h3>
+        <p class="value">75</p>
+        <small>Tracked from Github</small>
+      </div>
+      <div class="card blue">
+        <h3>Followers</h3>
+        <p class="value">+245</p>
+        <small>Just Updated</small>
+      </div>
+    </div>
+
+    <p id="welcome" style="padding: 0 25px;"></p>
+  </div>
 
   <script>
     window.onload = () => {
