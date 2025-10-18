@@ -16,7 +16,10 @@
         <input type="text" id="email"><br><br>
 
         <label>Role:</label>
-        <input type="text" id="role"><br><br>
+        <select id="role">
+            <option value="member">Member</option>
+            <option value="admin">Admin</option>
+        </select><br><br>
 
         <button type="submit">Save</button>
         <button type="button" id="cancelBtn">Cancel</button>
@@ -61,13 +64,13 @@
 
             const result = await res.json();
             if (res.ok) {
-            alert("✅ User updated!");
+            alert("User updated!");
             window.location.href = "admin.html";
             } else {
-            alert("❌ Error updating: " + result.error);
+            alert("Error updating: " + result.error);
             }
         } catch (err) {
-            alert("❌ Failed: " + err.message);
+            alert("Failed: " + err.message);
         }
         });
 
