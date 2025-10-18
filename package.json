@@ -1,8 +1,7 @@
 {
-  "type": "commonjs",
   "dependencies": {
-    "bcryptjs": "^3.0.2",
     "mysql2": "^3.15.2",
-    "readline-sync": "^1.4.10"
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5"
   }
 }
