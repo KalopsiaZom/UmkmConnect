@@ -5,9 +5,9 @@ async function registerUser(req, res) {
   let body = '';
   req.on('data', chunk => (body += chunk));
   req.on('end', async () => {
-    const { username, password, role } = JSON.parse(body);
+    const { username, email, password, role } = JSON.parse(body);
 
-    if (!username || !password) {
+    if (!username || !email || !password) {
       res.writeHead(400);
       return res.end('Missing fields');
     }
@@ -19,12 +19,18 @@ async function registerUser(req, res) {
         return res.end('Username already exists');
       }
 
+      const [exist2] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+      if (exist2.length > 0) {
+        res.writeHead(400);
+        return res.end('Email already exists');
+      }
+
       const hash = await bcrypt.hash(password, 10);
       const userRole = role && role === 'admin' ? 'admin' : 'member';
 
       await pool.query(
-        'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
-        [username, hash, userRole]
+        'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+        [username, email, hash, userRole]
       );
 
       res.writeHead(200);

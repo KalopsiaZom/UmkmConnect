@@ -5,9 +5,9 @@ async function loginUser(req, res) {
   let body = '';
   req.on('data', chunk => (body += chunk));
   req.on('end', async () => {
-    const { username, password } = JSON.parse(body);
+    const { username, email, password } = JSON.parse(body);
 
-    if (!username || !password) {
+    if (!username || !email || !password) {
       res.writeHead(400);
       return res.end('Missing fields');
     }
@@ -15,6 +15,12 @@ async function loginUser(req, res) {
     try {
       const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
       if (rows.length === 0) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ message: 'Invalid credentials' }));
+      }
+
+      const [rows2] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+      if (rows2.length === 0) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ message: 'Invalid credentials' }));
       }

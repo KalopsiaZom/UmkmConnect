@@ -11,6 +11,7 @@
     <h1>Register</h1>
     <form id="registerForm">
       <input type="text" id="username" placeholder="Username" required><br>
+      <input type="email" id="email" placeholder="Email" required><br>
       <input type="password" id="password" placeholder="Password" required><br>
 
       <label for="role">Role:</label>
@@ -30,13 +31,14 @@
       e.preventDefault();
 
       const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
       const role = document.getElementById("role").value;
 
       const res = await fetch("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, role })
+        body: JSON.stringify({ username, email, password, role })
       });
 
       const text = await res.text();
