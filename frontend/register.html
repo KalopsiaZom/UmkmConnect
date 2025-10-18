@@ -7,21 +7,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Register</h1>
-  <form id="registerForm">
-    <input type="text" id="username" placeholder="Username" required><br>
-    <input type="password" id="password" placeholder="Password" required><br>
+  <div class="form-container">
+    <h1>Register</h1>
+    <form id="registerForm">
+      <input type="text" id="username" placeholder="Username" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
 
-    <label for="role">Role:</label>
-    <select id="role">
-      <option value="member">Member</option>
-      <option value="admin">Admin</option>
-    </select><br><br>
+      <label for="role">Role:</label>
+      <select id="role">
+        <option value="member">Member</option>
+        <option value="admin">Admin</option>
+      </select><br><br>
 
-    <button type="submit">Register</button>
-  </form>
+      <button type="submit">Register</button>
+    </form>
 
-  <p>Already have an account? <a href="/login.html">Login here</a></p>
+    <p>Already have an account? <a href="/login.html">Login here</a></p>
+  </div>
 
   <script>
     document.getElementById("registerForm").addEventListener("submit", async (e) => {
