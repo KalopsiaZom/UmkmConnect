@@ -6,6 +6,10 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.form-container {
+  text-align: center;
+}
+
 body {
   min-height: 100vh;
   display: flex;

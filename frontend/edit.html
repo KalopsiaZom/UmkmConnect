@@ -6,75 +6,77 @@
   <link rel="stylesheet" href="edit.css">
 </head>
 <body>
-  <h2>Edit User</h2>
-  <form id="editForm">
-    <label>Username:</label>
-    <input type="text" id="username"><br><br>
+    <div class="form-container">
+    <h2>Edit User</h2>
+    <form id="editForm">
+        <label>Username:</label>
+        <input type="text" id="username"><br><br>
 
-    <label>Email:</label>
-    <input type="text" id="email"><br><br>
+        <label>Email:</label>
+        <input type="text" id="email"><br><br>
 
-    <label>Role:</label>
-    <input type="text" id="role"><br><br>
+        <label>Role:</label>
+        <input type="text" id="role"><br><br>
 
-    <button type="submit">Save</button>
-    <button type="button" id="cancelBtn">Cancel</button>
-  </form>
+        <button type="submit">Save</button>
+        <button type="button" id="cancelBtn">Cancel</button>
+    </form>
+    </div>
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get("id");
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
 
-    const usernameInput = document.getElementById("username");
-    const emailInput = document.getElementById("email");
-    const roleInput = document.getElementById("role");
-    const form = document.getElementById("editForm");
-    const cancelBtn = document.getElementById("cancelBtn");
+        const usernameInput = document.getElementById("username");
+        const emailInput = document.getElementById("email");
+        const roleInput = document.getElementById("role");
+        const form = document.getElementById("editForm");
+        const cancelBtn = document.getElementById("cancelBtn");
 
-    async function loadUser() {
-    try {
-        const res = await fetch(`/api/user/${id}`);
-        const user = await res.json();
+        async function loadUser() {
+        try {
+            const res = await fetch(`/api/user/${id}`);
+            const user = await res.json();
 
-        usernameInput.value = user.username || "";
-        emailInput.value = user.email || "";
-        roleInput.value = user.role || "";
-    } catch (err) {
-        alert("Error loading user: " + err.message);
-    }
-    }
+            usernameInput.value = user.username || "";
+            emailInput.value = user.email || "";
+            roleInput.value = user.role || "";
+        } catch (err) {
+            alert("Error loading user: " + err.message);
+        }
+        }
 
-    form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const username = usernameInput.value;
-    const email = emailInput.value;
-    const role = roleInput.value;
+        form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = usernameInput.value;
+        const email = emailInput.value;
+        const role = roleInput.value;
 
-    try {
-        const res = await fetch(`/api/edit/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, role })
+        try {
+            const res = await fetch(`/api/edit/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, role })
+            });
+
+            const result = await res.json();
+            if (res.ok) {
+            alert("✅ User updated!");
+            window.location.href = "admin.html";
+            } else {
+            alert("❌ Error updating: " + result.error);
+            }
+        } catch (err) {
+            alert("❌ Failed: " + err.message);
+        }
         });
 
-        const result = await res.json();
-        if (res.ok) {
-        alert("✅ User updated!");
-        window.location.href = "admin.html";
-        } else {
-        alert("❌ Error updating: " + result.error);
-        }
-    } catch (err) {
-        alert("❌ Failed: " + err.message);
-    }
-    });
+        cancelBtn.addEventListener("click", () => {
+        window.location.href = "/admin.html";
+        });
 
-    cancelBtn.addEventListener("click", () => {
-    window.location.href = "/admin.html";
-    });
+        loadUser();
 
-    loadUser();
-
-  </script>
+    </script>
 </body>
 </html>
