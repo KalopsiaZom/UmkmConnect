@@ -2,98 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
+  <title>Admin Page</title>
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="logo">
-      <h2>⚙️ X-Admin</h2>
-    </div>
+  <h2>User List</h2>
+  <table id="userTable" border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled dynamically -->
+    </tbody>
+  </table>
 
-    <nav>
-      <h3>GENERAL</h3>
-      <a href="#" class="active">Users</a>
-      <a href="#">Office Map</a>
-
-      <h3>SETTINGS</h3>
-      <a href="#">Security</a>
-      <a href="#">Backups</a>
-    </nav>
-  </aside>
-
-  <main class="main-content">
-    <header class="topbar">
-      <div class="search-container">
-        <input type="text" placeholder="Search user...">
-        <select>
-          <option>All Users</option>
-          <option>Online</option>
-          <option>Offline</option>
-        </select>
-      </div>
-
-      <div class="topbar-actions">
-        <button class="btn-outline">Import/Export</button>
-        <button class="btn-blue">+ Add User</button>
-        <button class="btn-blue" id="backBtn">Back</button>
-      </div>
-    </header>
-
-    <section class="table-section">
-      <table>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>ID</th>
-            <th>Role</th>
-            <th>Email</th>
-            <th colspan="2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-      </table>
-
-      <div class="pagination">
-        <button>← Previous</button>
-        <span>1</span>
-        <button>Next →</button>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    document.getElementById("backBtn").addEventListener("click", () => {;
-        window.location.href = "/dashboard.html";
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const tbody = document.querySelector("tbody");
-
-        fetch("/api/users")
-        .then(res => res.json())
-        .then(data => {
-            tbody.innerHTML = "";
-            data.forEach(user => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${user.username || "-"}</td>
-                <td>${user.id || user.id_user || "-"}</td>
-                <td>${user.role || "-"}</td>
-                <td>${user.email || "-"}</td>
-                <td><button class="btn-green" onclick="window.location.href='edit.html?id=${user.id}'">Edit</button></td>
-                <td><button class="btn-red">Delete</button></td>
-            `;
-            tbody.appendChild(row);
-            });
-        })
-        .catch(err => {
-            tbody.innerHTML = `<tr><td colspan="6">Error loading users: ${err.message}</td></tr>`;
-      });
-  });
-  </script>
+  <script src="admin.js"></script>
 </body>
 </html>
