@@ -69,6 +69,31 @@
     document.getElementById("backBtn").addEventListener("click", () => {;
         window.location.href = "/dashboard.html";
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const tbody = document.querySelector("tbody");
+
+        fetch("/api/users")
+        .then(res => res.json())
+        .then(data => {
+            tbody.innerHTML = "";
+            data.forEach(user => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${user.username || "-"}</td>
+                <td>${user.id || user.id_user || "-"}</td>
+                <td>${user.role || "-"}</td>
+                <td>${user.email || "-"}</td>
+                <td><button>Edit</button></td>
+                <td><button>Delete</button></td>
+            `;
+            tbody.appendChild(row);
+            });
+        })
+        .catch(err => {
+            tbody.innerHTML = `<tr><td colspan="6">Error loading users: ${err.message}</td></tr>`;
+      });
+  });
   </script>
 </body>
 </html>

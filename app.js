@@ -87,8 +87,7 @@ module.exports = async (req, res) => {
             return res.end('File not found');
             }
             res.writeHead(200, { 'Content-Type': 'text/html' });
-            tampilBarang(res);
-            //res.end(html);
+            res.end(html);
         });
     }
     
