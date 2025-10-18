@@ -22,18 +22,15 @@
   </form>
 
   <script>
-        // Get user ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
 
-    // DOM elements
     const usernameInput = document.getElementById("username");
     const emailInput = document.getElementById("email");
     const roleInput = document.getElementById("role");
     const form = document.getElementById("editForm");
     const cancelBtn = document.getElementById("cancelBtn");
 
-    // Load user data
     async function loadUser() {
     try {
         const res = await fetch(`/api/user/${id}`);
@@ -47,7 +44,6 @@
     }
     }
 
-    // Save changes
     form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = usernameInput.value;
@@ -73,7 +69,6 @@
     }
     });
 
-    // Cancel button
     cancelBtn.addEventListener("click", () => {
     window.location.href = "/admin.html";
     });
