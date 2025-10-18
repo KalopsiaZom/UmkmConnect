@@ -5,7 +5,7 @@ async function registerUser(req, res) {
   let body = '';
   req.on('data', chunk => (body += chunk));
   req.on('end', async () => {
-    const { username, password } = JSON.parse(body);
+    const { username, password, role } = JSON.parse(body);
 
     if (!username || !password) {
       res.writeHead(400);
@@ -20,7 +20,12 @@ async function registerUser(req, res) {
       }
 
       const hash = await bcrypt.hash(password, 10);
-      await pool.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hash]);
+      const userRole = role && role === 'admin' ? 'admin' : 'member';
+
+      await pool.query(
+        'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+        [username, hash, userRole]
+      );
 
       res.writeHead(200);
       res.end('Registration successful');
