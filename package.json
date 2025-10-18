@@ -1,4 +1,5 @@
 {
+  "type": "commonjs",
   "dependencies": {
     "mysql2": "^3.15.2",
     "readline-sync": "^1.4.10"
