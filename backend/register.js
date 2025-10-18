@@ -26,7 +26,9 @@ async function registerUser(req, res) {
       }
 
       const hash = await bcrypt.hash(password, 10);
-      const userRole = role && role === 'admin' ? 'admin' : 'member';
+      const allowedRoles = ['admin', 'member', 'umkm', 'investor'];
+      const userRole = allowedRoles.includes(role) ? role : 'member';
+
 
       await pool.query(
         'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',

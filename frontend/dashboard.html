@@ -23,6 +23,7 @@
       <h1>Material Dashboard</h1>
       <div class="buttons">
         <button id="adminBtn" style="display:none;">Admin Panel</button>
+        <button id="umkmBtn" style="display:none;">UMKM Test</button>
         <button id="logoutBtn">Logout</button>
       </div>
     </div>
@@ -69,6 +70,10 @@
 
       if (role === "admin") {
         document.getElementById("adminBtn").style.display = "inline-block";
+      }
+
+      if (role === "umkm") {
+        document.getElementById("umkmBtn").style.display = "inline-block";
       }
     };
 
