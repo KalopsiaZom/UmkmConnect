@@ -15,16 +15,16 @@ async function loginUser(req, res) {
     try {
       const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
       if (rows.length === 0) {
-        res.writeHead(401);
-        return res.end('Invalid credentials');
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ message: 'Invalid credentials' }));
       }
 
       const user = rows[0];
       const match = await bcrypt.compare(password, user.password);
 
       if (!match) {
-        res.writeHead(401);
-        return res.end('Invalid credentials');
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ message: 'Invalid credentials' }));
       }
 
       // Return username and role
@@ -32,8 +32,8 @@ async function loginUser(req, res) {
       res.end(JSON.stringify({ message: 'Login successful', role: user.role }));
     } catch (err) {
       console.error(err);
-      res.writeHead(500);
-      res.end('Database error');
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Database error' }));
     }
   });
 }
