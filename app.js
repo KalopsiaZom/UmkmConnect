@@ -8,7 +8,6 @@ const koneksi = require('./backend/koneksi');
 module.exports = async (req, res) => {
   const urlsplit = req.url.split('/');
 
-  // --- REGISTER / LOGIN ---
   if (req.method === "POST" && urlsplit[1] === "register") {
     return registerUser(req, res);
   } 
@@ -16,7 +15,7 @@ module.exports = async (req, res) => {
     return loginUser(req, res);
   }
 
-  // --- GET ALL USERS ---
+  // Getting all users for admin
   else if (req.method === "GET" && req.url === "/api/users") {
     tampilUsers((err, results) => {
       if (err) {
@@ -28,7 +27,7 @@ module.exports = async (req, res) => {
     });
   }
 
-  // --- GET ONE USER BY ID ---
+  // Getting user by ID for editing
   else if (req.method === "GET" && req.url.startsWith("/api/user/")) {
     const id = req.url.split("/")[3];
     try {
@@ -41,7 +40,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  // --- UPDATE USER BY ID ---
+  // Updating user by ID
   else if (req.method === "POST" && req.url.startsWith("/api/edit/")) {
     const id = req.url.split("/")[3];
     let body = "";
@@ -64,19 +63,33 @@ module.exports = async (req, res) => {
     });
   }
 
-else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
-  fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
-    if (err) {
-      res.writeHead(404);
-      return res.end('File not found');
+    // Deleting user by ID
+    else if (req.method === "DELETE" && req.url.startsWith("/api/delete/")) {
+    const id = req.url.split("/")[3];
+    try {
+        const [result] = await koneksi.query("DELETE FROM users WHERE id = ?", [id]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "User deleted successfully", affectedRows: result.affectedRows }));
+    } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
     }
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(html);
-  });
-}
+    }
 
 
-  // --- CSS FILES ---
+    else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
+    fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
+        if (err) {
+        res.writeHead(404);
+        return res.end('File not found');
+        }
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(html);
+    });
+    }
+
+
+  // CSS Files
   else if (req.method === "GET" && req.url.endsWith(".css")) {
     const cssPath = path.join(__dirname, 'frontend', req.url);
     fs.readFile(cssPath, (err, css) => {
@@ -89,7 +102,7 @@ else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
     });
   }
 
-  // --- HTML FILES ---
+  // HTML Files
   else if (req.method === "GET" && req.url.endsWith(".html")) {
     const htmlPath = path.join(__dirname, 'frontend', req.url);
     fs.readFile(htmlPath, (err, html) => {
@@ -102,7 +115,7 @@ else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
     });
   }
 
-  // --- JS FILES (frontend scripts like edit.js, admin.js) ---
+  // JS Files
   else if (req.method === "GET" && req.url.endsWith(".js")) {
     const jsPath = path.join(__dirname, 'frontend', req.url);
     fs.readFile(jsPath, (err, js) => {
@@ -115,7 +128,7 @@ else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
     });
   }
 
-  // --- DEFAULT (fallback to login) ---
+  // Default to login page
   else {
     fs.readFile(path.join(__dirname, 'frontend', 'login.html'), (err, html) => {
       if (err) {
