@@ -12,34 +12,45 @@
       <input type="password" id="password" placeholder="Password" required><br>
       <button type="submit">Login</button>
     </form>
-
+    <h3 id="errorMessage" class="error-message" style="display: none;"></h3>
     <p>Don't have an account? <a href="/register.html">Register here</a></p>
   </div>
 
-    <script>
-      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const errorMessage = document.getElementById("errorMessage");
+
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      const res = await fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
+      try {
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (res.status === 200) {
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("username", username);
-        window.location.href = "/dashboard.html";
-      } else {
-        alert(data.message || "Login failed");
+        if (res.status === 200) {
+          localStorage.setItem("role", data.role);
+          localStorage.setItem("username", username);
+          window.location.href = "/dashboard.html";
+        } else if (res.status === 401) {
+          errorMessage.textContent = "Incorrect username or password!";
+          errorMessage.style.display = "block";
+        } else {
+          errorMessage.textContent = data.message || "Login failed!";
+          errorMessage.style.display = "block";
+        }
+      } catch (err) {
+        errorMessage.textContent = "Server error. Please try again later.";
+        errorMessage.style.display = "block";
       }
     });
   </script>
-
 </body>
 </html>
