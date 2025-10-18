@@ -14,8 +14,8 @@
 
   <p>Don't have an account? <a href="/register.html">Register here</a></p>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    <script>
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const username = document.getElementById("username").value;
@@ -30,15 +30,15 @@
       const data = await res.json();
 
       if (res.status === 200) {
-        if (data.role === "admin") {
-          window.location.href = "/admin.html";
-        } else {
-          window.location.href = "/dashboard.html";
-        }
+        // Save role to localStorage so dashboard can know who is who
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("username", username);
+        window.location.href = "/dashboard.html";
       } else {
         alert(data.message || "Login failed");
       }
     });
   </script>
+
 </body>
 </html>
