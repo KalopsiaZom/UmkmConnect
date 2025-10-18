@@ -37,6 +37,7 @@
       <div class="topbar-actions">
         <button class="btn-outline">Import/Export</button>
         <button class="btn-blue">+ Add User</button>
+        <button class="btn-blue" id="backBtn">Back</button>
       </div>
     </header>
 
@@ -90,5 +91,11 @@
       </div>
     </section>
   </main>
+
+  <script>
+    document.getElementById("backBtn").addEventListener("click", () => {;
+        window.location.href = "/dashboard.html";
+    });
+  </script>
 </body>
 </html>
