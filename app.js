@@ -1,44 +1,56 @@
 const fs = require('fs');
-const tampilBarang = require('./tampil_data');
-const simpanBarang = require('./simpan_data');
-const hapusBarang = require('./delete_data');
-const editBarang = require('./edit_data');
+const path = require('path');
+const registerUser = require('./backend/register');
+const loginUser = require('./backend/login');
 
 module.exports = (req, res) => {
-    const urlsplit = req.url.split('/');
+  const urlsplit = req.url.split('/');
 
-    if (req.method === "POST" && urlsplit[1] === "simpan") {
-        simpanBarang(req, res);
-    } 
-    else if (req.method === "GET" && urlsplit[1] === "delete") {
-        hapusBarang(req, res, urlsplit[2]);
-    } 
-    else if (req.method === "GET" && urlsplit[1] === "edit") {
-        editBarang.editData(req, res, urlsplit[2]);
-    } 
-    else if (req.method === "POST" && urlsplit[1] === "update") {
-        editBarang.updateBarang(req, res); 
-    } 
-    else if (req.method === 'GET' && req.url === '/style.css') {
-        fs.readFile(__dirname + '/style.css', (err, css) => {
-            if (err) {
-                res.writeHead(404);
-                return res.end('CSS not found');
-            }
-            res.writeHead(200, { 'Content-Type': 'text/css' });
-            res.end(css);
-        });
-    } else {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        fs.readFile(__dirname + "/form.html", (err, data) => {
-            if (err) {
-                res.write("Error loading form");
-                res.end();
-            } else {
-                res.write(data);
-                tampilBarang(res);
-            }
-        });
-    }
-
+  if (req.method === "POST" && urlsplit[1] === "register") {
+    registerUser(req, res);
+  }
+  else if (req.method === "POST" && urlsplit[1] === "login") {
+    loginUser(req, res);
+  }
+  else if (req.method === "GET" && req.url === '/style.css') {
+    fs.readFile(path.join(__dirname, 'style.css'), (err, css) => {
+      if (err) {
+        res.writeHead(404);
+        return res.end('CSS not found');
+      }
+      res.writeHead(200, { 'Content-Type': 'text/css' });
+      res.end(css);
+    });
+  }
+  else if (req.method === "GET" && req.url === '/register.html') {
+    fs.readFile(path.join(__dirname, 'register.html'), (err, html) => {
+      if (err) {
+        res.writeHead(404);
+        return res.end('File not found');
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(html);
+    });
+  }
+  else if (req.method === "GET" && req.url === '/dashboard.html') {
+    fs.readFile(path.join(__dirname, 'dashboard.html'), (err, html) => {
+      if (err) {
+        res.writeHead(404);
+        return res.end('File not found');
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(html);
+    });
+  }
+  else {
+    // Default: show login.html
+    fs.readFile(path.join(__dirname, 'login.html'), (err, html) => {
+      if (err) {
+        res.writeHead(404);
+        return res.end('File not found');
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(html);
+    });
+  }
 };
