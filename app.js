@@ -128,7 +128,7 @@ module.exports = async (req, res) => {
     }
 
     else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
-    fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
+    fs.readFile(path.join(__dirname, 'public', 'edit.html'), (err, html) => {
         if (err) {
         res.writeHead(404);
         return res.end('File not found');
@@ -141,7 +141,7 @@ module.exports = async (req, res) => {
 
   // CSS Files
   else if (req.method === "GET" && req.url.endsWith(".css")) {
-    const cssPath = path.join(__dirname, 'frontend', req.url);
+    const cssPath = path.join(__dirname, 'public', req.url);
     fs.readFile(cssPath, (err, css) => {
       if (err) {
         res.writeHead(404);
@@ -154,7 +154,7 @@ module.exports = async (req, res) => {
 
   // HTML Files
   else if (req.method === "GET" && req.url.endsWith(".html")) {
-    const htmlPath = path.join(__dirname, 'frontend', req.url);
+    const htmlPath = path.join(__dirname, 'public', req.url);
     fs.readFile(htmlPath, (err, html) => {
       if (err) {
         res.writeHead(404);
@@ -167,7 +167,7 @@ module.exports = async (req, res) => {
 
   // JS Files
   else if (req.method === "GET" && req.url.endsWith(".js")) {
-    const jsPath = path.join(__dirname, 'frontend', req.url);
+    const jsPath = path.join(__dirname, 'public', req.url);
     fs.readFile(jsPath, (err, js) => {
       if (err) {
         res.writeHead(404);
@@ -180,7 +180,7 @@ module.exports = async (req, res) => {
 
   // Default to login page
   else {
-    fs.readFile(path.join(__dirname, 'frontend', 'login.html'), (err, html) => {
+    fs.readFile(path.join(__dirname, 'public', 'login.html'), (err, html) => {
       if (err) {
         res.writeHead(404);
         return res.end('File not found');
