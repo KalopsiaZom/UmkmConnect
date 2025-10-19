@@ -3,6 +3,7 @@ const path = require('path');
 const registerUser = require('./backend/register');
 const loginUser = require('./backend/login');
 const tampilUsers = require('./backend/admin');
+const tampilumkmUsers = require('./backend/adminumkm');
 const koneksi = require('./backend/koneksi');
 
 module.exports = async (req, res) => {
