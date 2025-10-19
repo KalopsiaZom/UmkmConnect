@@ -102,6 +102,32 @@ module.exports = async (req, res) => {
     }
     }
 
+    // Add UMKM info by user ID
+    else if (req.method === "POST" && req.url.startsWith("/api/umkm/add/")) {
+        const userId = req.url.split("/")[4];
+        let body = "";
+
+        req.on("data", chunk => (body += chunk));
+        req.on("end", async () => {
+            try {
+            const { business_name, business_desc, location, owner, category, revenue } = JSON.parse(body);
+
+            await koneksi.query(
+                "INSERT INTO umkm (user_id, business_name, business_desc, location, owner, category, revenue) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [userId, business_name, business_desc, location, owner, category, revenue]
+            );
+
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "UMKM added successfully" }));
+            } catch (err) {
+            console.error(err);
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        }
+
+
     // Get Investor info by user ID
     else if (req.method === "GET" && req.url.startsWith("/api/investor/")) {
     const id = req.url.split("/")[3];

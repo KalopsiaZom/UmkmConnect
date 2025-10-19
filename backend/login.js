@@ -33,9 +33,14 @@ async function loginUser(req, res) {
         return res.end(JSON.stringify({ message: 'Invalid credentials' }));
       }
 
-      // Return username and role
+      // Return username, role, and id
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'Login successful', role: user.role }));
+      res.end(JSON.stringify({
+        message: 'Login successful',
+        role: user.role,
+        id: user.id
+      }));
+
     } catch (err) {
       console.error(err);
       res.writeHead(500, { 'Content-Type': 'application/json' });
