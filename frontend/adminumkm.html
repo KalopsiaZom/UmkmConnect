@@ -77,7 +77,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         const tbody = document.querySelector("tbody");
 
-        fetch("/api/umkmUsers")
+        fetch("/api/umkmusers")
         .then(res => res.json())
         .then(data => {
             tbody.innerHTML = "";
