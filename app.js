@@ -153,17 +153,20 @@ module.exports = async (req, res) => {
   }
 
   // HTML Files
-  else if (req.method === "GET" && req.url.endsWith(".html")) {
-    const htmlPath = path.join(__dirname, 'public', req.url);
-    fs.readFile(htmlPath, (err, html) => {
-      if (err) {
-        res.writeHead(404);
-        return res.end('File not found');
-      }
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(html);
-    });
-  }
+else if (req.method === "GET" && req.url.includes(".html")) {
+  const cleanPath = req.url.split("?")[0]; // remove ?id=5 or others
+  const htmlPath = path.join(__dirname, "public", cleanPath);
+
+  fs.readFile(htmlPath, (err, html) => {
+    if (err) {
+      res.writeHead(404);
+      return res.end("File not found");
+    }
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.end(html);
+  });
+}
+
 
   // JS Files
   else if (req.method === "GET" && req.url.endsWith(".js")) {
