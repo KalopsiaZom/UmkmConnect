@@ -77,6 +77,19 @@ module.exports = async (req, res) => {
     }
     }
 
+    // Deleting UMKM by ID
+    else if (req.method === "DELETE" && req.url.startsWith("/api/deleteumkm/")) {
+    const id = req.url.split("/")[3];
+    try {
+        const [result] = await koneksi.query("DELETE FROM umkm WHERE id = ?", [id]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "User deleted successfully", affectedRows: result.affectedRows }));
+    } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+    }
+    }
+
     // Getting all UMKM users for admin
     else if (req.method === "GET" && req.url === "/api/umkmusers") {
         tampilumkmUsers((err, results) => {
@@ -192,7 +205,7 @@ module.exports = async (req, res) => {
 
   // HTML Files
 else if (req.method === "GET" && req.url.includes(".html")) {
-  const cleanPath = req.url.split("?")[0]; // remove ?id=5 or others
+  const cleanPath = req.url.split("?")[0]; 
   const htmlPath = path.join(__dirname, "frontend", cleanPath);
 
   fs.readFile(htmlPath, (err, html) => {
