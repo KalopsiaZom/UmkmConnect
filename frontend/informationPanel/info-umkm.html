@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UMKM Information</title>
+    <link rel="stylesheet" href="edit.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>UMKM Information</h2>
+
+        <form id="infoForm">
+            <label>Business Name:</label>
+            <input type="text" id="business_name"><br><br>
+
+            <label>Business Description:</label>
+            <input type="text" id="business_desc"><br><br>
+
+            <label>Location URL:</label>
+            <input type="text" id="location" placeholder="https://maps.google.com/..."><br><br>
+
+            <label>Owner:</label>
+            <input type="text" id="owner"><br><br>
+
+            <label>Category:</label>
+            <input type="text" id="category"><br><br>
+
+            <label>Revenue:</label>
+            <input type="text" id="revenue"><br><br>
+
+            <button type="button" id="viewLocation">View Location</button><br><br>
+
+            <button type="submit">Save Changes</button>
+            <button type="button" id="backBtn">Back</button>
+        </form>
+    </div>
+
+    <script>
+        const id = new URLSearchParams(window.location.search).get("id");
+
+        async function loadUmkmInfo() {
+        try {
+            const res = await fetch(`/api/umkm/${id}`);
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || "Failed to load");
+            document.getElementById("business_name").value = data.business_name || "";
+            document.getElementById("business_desc").value = data.business_desc || "";
+            document.getElementById("location").value = data.location || "";
+            document.getElementById("owner").value = data.owner || "";
+            document.getElementById("category").value = data.category || "";
+            document.getElementById("revenue").value = data.revenue || "";
+        } catch (err) {
+            alert("Error loading UMKM info: " + err.message);
+        }
+        }
+
+        document.getElementById("infoForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+            business_name: document.getElementById("business_name").value,
+            business_desc: document.getElementById("business_desc").value,
+            location: document.getElementById("location").value,
+            owner: document.getElementById("owner").value,
+            category: document.getElementById("category").value,
+            revenue: document.getElementById("revenue").value
+        };
+
+        try {
+            const res = await fetch(`/api/umkm/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if (res.ok) alert("UMKM info saved!");
+            else alert("Error: " + (result.error || "Update failed"));
+        } catch (err) {
+            alert("Failed to save: " + err.message);
+        }
+        });
+
+        document.getElementById("viewLocation").addEventListener("click", () => {
+        const url = document.getElementById("location").value;
+        if (url) window.open(url, "_blank");
+        else alert("No location URL provided");
+        });
+
+        document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "admin.html";
+        });
+
+        loadUmkmInfo();
+    </script>
+</body>
+</html>

@@ -76,6 +76,56 @@ module.exports = async (req, res) => {
     }
     }
 
+    // Information Panel (SELECT)
+    // Get UMKM info by user ID
+    else if (req.method === "GET" && req.url.startsWith("/api/umkm/")) {
+    const id = req.url.split("/")[3];
+    try {
+        const [rows] = await koneksi.query("SELECT * FROM umkm WHERE user_id = ?", [id]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(rows[0] || {}));
+    } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+    }
+    }
+
+    // Get Investor info by user ID
+    else if (req.method === "GET" && req.url.startsWith("/api/investor/")) {
+    const id = req.url.split("/")[3];
+    try {
+        const [rows] = await koneksi.query("SELECT * FROM investor WHERE user_id = ?", [id]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(rows[0] || {}));
+    } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+    }
+    }
+
+    // Information Panel (UPDATE)
+    else if (req.method === "POST" && req.url.startsWith("/api/umkm/")) {
+    const id = req.url.split("/")[3];
+    let body = "";
+
+    req.on("data", chunk => (body += chunk));
+    req.on("end", async () => {
+        try {
+        const { business_name, business_desc, location, owner, category, revenue} = JSON.parse(body);
+
+        await koneksi.query(
+            "UPDATE umkm SET business_name=?, business_desc=?, location=?, owner=?, category=?, revenue=? WHERE user_id=?",
+            [business_name, business_desc, location, owner, category, revenue, id]
+        );
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "UMKM info updated successfully" }));
+        } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+        }
+    });
+    }
 
     else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
     fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
