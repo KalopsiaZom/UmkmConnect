@@ -118,20 +118,21 @@
     }
 
     function openInformation(role, id) {
-        switch (role) {
-            case "umkm":
-            window.location.href = `info-umkm.html?id=${id}`;
-            break;
-            case "investor":
-            window.location.href = `info-investor.html?id=${id}`;
-            break;
-            case "admin":
-            window.location.href = `info-admin.html?id=${id}`;
-            break;
-            default:
-            window.location.href = `info-member.html?id=${id}`;
-        }
+    switch (role) {
+        case "umkm":
+        window.location.href = `informationPanel/info-umkm.html?id=${id}`;
+        break;
+        case "investor":
+        window.location.href = `informationPanel/info-investor.html?id=${id}`;
+        break;
+        case "admin":
+        window.location.href = `informationPanel/info-admin.html?id=${id}`;
+        break;
+        default:
+        window.location.href = `informationPanel/info-member.html?id=${id}`;
     }
+    }
+
 
     </script>
 </body>
