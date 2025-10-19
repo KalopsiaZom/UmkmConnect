@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="/admin.css">
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
   <aside class="sidebar">
     <div class="logo">
-      <h2>⚙️ X-Admin</h2>
+      <h2>Admin</h2>
     </div>
 
     <nav>
       <h3>GENERAL</h3>
       <a href="#" class="active">Users</a>
-      <a href="#">Office Map</a>
+      <a href="adminumkm.html">UMKM</a>
+      <a href="#">Investors</a>
 
       <h3>SETTINGS</h3>
       <a href="#">Security</a>
@@ -35,7 +36,6 @@
       </div>
 
       <div class="topbar-actions">
-        <button class="btn-outline">Import/Export</button>
         <button class="btn-blue">+ Add User</button>
         <button class="btn-blue" id="backBtn">Back</button>
       </div>
@@ -87,7 +87,6 @@
                 <td>${user.email || "-"}</td>
                 <td class="action-buttons">
                     <button class="btn-green" onclick="window.location.href='edit.html?id=${user.id}'">Edit</button>
-                    <button class="btn-blue2" onclick="openInformation('${user.role}', ${user.id})">Information</button>
                     <button class="btn-red" onclick="deleteUser(${user.id})">Delete</button>
                 </td>
             `;
@@ -116,23 +115,6 @@
         alert("Error deleting user: " + err.message);
     }
     }
-
-    function openInformation(role, id) {
-    switch (role) {
-        case "umkm":
-        window.location.href = `/info-umkm.html?id=${id}`;
-        break;
-        case "investor":
-        window.location.href = `informationPanel/info-investor.html?id=${id}`;
-        break;
-        case "admin":
-        window.location.href = `informationPanel/info-admin.html?id=${id}`;
-        break;
-        default:
-        window.location.href = `informationPanel/info-member.html?id=${id}`;
-    }
-    }
-
 
     </script>
 </body>

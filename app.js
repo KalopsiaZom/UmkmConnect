@@ -76,7 +76,18 @@ module.exports = async (req, res) => {
     }
     }
 
-    // Information Panel (SELECT)
+    // Getting all UMKM users for admin
+    else if (req.method === "GET" && req.url === "/api/umkmusers") {
+        tampilumkmUsers((err, results) => {
+        if (err) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ error: "Database error", details: err.message }));
+        }
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(results));
+        });
+    }
+
     // Get UMKM info by user ID
     else if (req.method === "GET" && req.url.startsWith("/api/umkm/")) {
     const id = req.url.split("/")[3];
@@ -103,7 +114,7 @@ module.exports = async (req, res) => {
     }
     }
 
-    // Information Panel (UPDATE)
+    // Update UMKM info by user ID
     else if (req.method === "POST" && req.url.startsWith("/api/umkm/")) {
     const id = req.url.split("/")[3];
     let body = "";
@@ -128,7 +139,7 @@ module.exports = async (req, res) => {
     }
 
     else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
-    fs.readFile(path.join(__dirname, 'public', 'edit.html'), (err, html) => {
+    fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
         if (err) {
         res.writeHead(404);
         return res.end('File not found');
@@ -141,7 +152,7 @@ module.exports = async (req, res) => {
 
   // CSS Files
   else if (req.method === "GET" && req.url.endsWith(".css")) {
-    const cssPath = path.join(__dirname, 'public', req.url);
+    const cssPath = path.join(__dirname, 'frontend', req.url);
     fs.readFile(cssPath, (err, css) => {
       if (err) {
         res.writeHead(404);
@@ -155,7 +166,7 @@ module.exports = async (req, res) => {
   // HTML Files
 else if (req.method === "GET" && req.url.includes(".html")) {
   const cleanPath = req.url.split("?")[0]; // remove ?id=5 or others
-  const htmlPath = path.join(__dirname, "public", cleanPath);
+  const htmlPath = path.join(__dirname, "frontend", cleanPath);
 
   fs.readFile(htmlPath, (err, html) => {
     if (err) {
@@ -170,7 +181,7 @@ else if (req.method === "GET" && req.url.includes(".html")) {
 
   // JS Files
   else if (req.method === "GET" && req.url.endsWith(".js")) {
-    const jsPath = path.join(__dirname, 'public', req.url);
+    const jsPath = path.join(__dirname, 'frontend', req.url);
     fs.readFile(jsPath, (err, js) => {
       if (err) {
         res.writeHead(404);
@@ -183,7 +194,7 @@ else if (req.method === "GET" && req.url.includes(".html")) {
 
   // Default to login page
   else {
-    fs.readFile(path.join(__dirname, 'public', 'login.html'), (err, html) => {
+    fs.readFile(path.join(__dirname, 'frontend', 'login.html'), (err, html) => {
       if (err) {
         res.writeHead(404);
         return res.end('File not found');
