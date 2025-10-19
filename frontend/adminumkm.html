@@ -46,6 +46,7 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>User ID</th>
             <th>Business Name</th>
             <th>Business Description</th>
             <th>Location</th>
@@ -85,6 +86,7 @@
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${user.id || user.id_user || "-"}</td>
+                <td>${user.user_id || "-"}</td>
                 <td>${user.business_name || "-"}</td>
                 <td>${user.business_desc || "-"}</td>
                 <td>${user.location || "-"}</td>
