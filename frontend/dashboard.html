@@ -26,6 +26,7 @@
       </div>
     </div>
 
+    <!-- Statistik Kartu -->
     <div class="dashboard">
       <div class="card orange">
         <h3>Regional GDP Growth</h3>
@@ -49,8 +50,14 @@
       </div>
     </div>
 
+    <!-- Chart Distribusi -->
     <div class="chart-section" style="padding: 20px;">
       <canvas id="umkmChart" height="120"></canvas>
+    </div>
+
+    <!-- Chart Tren Pertumbuhan -->
+    <div class="chart-section" style="padding: 20px;">
+      <canvas id="growthChart" height="120"></canvas>
     </div>
 
     <p id="welcome" style="padding: 0 25px;"></p>
@@ -61,7 +68,6 @@
       try {
         const response = await fetch("https://data.jabarprov.go.id/api-backend/bigdata/diskuk/od_17367_jml_ush_mikro_kecil_menengah_umkm_binaan__jenis_us_v2?download=csv");
         const text = await response.text();
-
         const rows = text.split("\n").map(r => r.split(","));
         const headers = rows[0];
         const data = rows.slice(1).map(row => {
@@ -70,10 +76,8 @@
           return obj;
         });
 
-        // Filter tahun 2023
+        // === Distribusi 2023 ===
         const latest = data.filter(d => d.tahun === "2023");
-
-        // Hitung total UMKM per kabupaten/kota
         const byRegion = {};
         latest.forEach(item => {
           const region = item.nama_kabupaten_kota;
@@ -81,11 +85,11 @@
           if (!isNaN(jumlah)) byRegion[region] = (byRegion[region] || 0) + jumlah;
         });
 
-        // Total seluruh UMKM
+        // Tampilkan total UMKM
         const totalUMKM = Object.values(byRegion).reduce((a, b) => a + b, 0);
         document.getElementById("umkmCount").textContent = totalUMKM.toLocaleString();
 
-        // Buat Chart.js
+        // === Chart Distribusi 2023 ===
         const ctx = document.getElementById("umkmChart").getContext("2d");
         new Chart(ctx, {
           type: "bar",
@@ -113,6 +117,47 @@
           }
         });
 
+        // === Tren Pertumbuhan 2019–2023 ===
+        const yearTotals = {};
+        data.forEach(item => {
+          const year = item.tahun;
+          const jumlah = parseInt(item.jumlah_umkm || "0");
+          if (!isNaN(jumlah)) yearTotals[year] = (yearTotals[year] || 0) + jumlah;
+        });
+
+        const sortedYears = Object.keys(yearTotals).filter(y => parseInt(y) >= 2019).sort();
+        const yearValues = sortedYears.map(y => yearTotals[y]);
+
+        const ctx2 = document.getElementById("growthChart").getContext("2d");
+        new Chart(ctx2, {
+          type: "line",
+          data: {
+            labels: sortedYears,
+            datasets: [{
+              label: "Total UMKM Jawa Barat",
+              data: yearValues,
+              borderColor: "rgba(255, 159, 64, 1)",
+              backgroundColor: "rgba(255, 159, 64, 0.3)",
+              tension: 0.3,
+              fill: true,
+              pointRadius: 5
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: "top" },
+              title: {
+                display: true,
+                text: "Tren Pertumbuhan UMKM (2019–2023)"
+              }
+            },
+            scales: {
+              y: { beginAtZero: true, title: { display: true, text: "Jumlah UMKM" } }
+            }
+          }
+        });
+
       } catch (err) {
         console.error("Gagal memuat data UMKM:", err);
         document.getElementById("umkmCount").textContent = "Error loading data";
@@ -136,7 +181,6 @@
       if (role === "umkm") document.getElementById("umkmBtn").style.display = "inline-block";
       if (role === "investor") document.getElementById("investorBtn").style.display = "inline-block";
 
-      // Panggil data UMKM real
       await fetchUMKMData();
     };
 
