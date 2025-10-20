@@ -15,8 +15,8 @@
     <nav>
       <h3>GENERAL</h3>
       <a href="admin.html">Users</a>
-      <a href="#" class="active">UMKM</a>
-      <a href="admininvestor.html">Investors</a>
+      <a href="adminumkm.html">UMKM</a>
+      <a href="#" class="active">Investors</a>
     </nav>
   </aside>
 
@@ -38,12 +38,9 @@
           <tr>
             <th>ID</th>
             <th>User ID</th>
-            <th>Business Name</th>
-            <th>Business Description</th>
-            <th>Location</th>
-            <th>Owner</th>
-            <th>Category</th>
-            <th>Revenue</th>
+            <th>Company Name</th>
+            <th>Investment Focus</th>
+            <th>Capital</th>
             <th style="text-align: center;">Action</th>
           </tr>
         </thead>
@@ -69,7 +66,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         const tbody = document.querySelector("tbody");
 
-        fetch("/api/umkmusers")
+        fetch("/api/investorusers")
         .then(res => res.json())
         .then(data => {
             tbody.innerHTML = "";
@@ -78,14 +75,11 @@
             row.innerHTML = `
                 <td>${user.id || user.id_user || "-"}</td>
                 <td>${user.user_id || "-"}</td>
-                <td>${user.business_name || "-"}</td>
-                <td>${user.business_desc || "-"}</td>
-                <td>${user.location || "-"}</td>
-                <td>${user.owner || "-"}</td>
-                <td>${user.category || "-"}</td>
-                <td>${user.revenue || "-"}</td>
+                <td>${user.company_name || "-"}</td>
+                <td>${user.investment_focus || "-"}</td>
+                <td>${user.capital || "-"}</td>
                 <td class="action-buttons">
-                    <button class="btn-green" onclick="window.location.href='info-umkm.html?id=${user.user_id}'">Edit</button>
+                    <button class="btn-green" onclick="window.location.href='info-investor.html?id=${user.user_id}'">Edit</button>
                     <button class="btn-red" onclick="deleteUser(${user.id})">Delete</button>
                 </td>
             `;
@@ -101,7 +95,7 @@
     if (!confirm("Are you sure you want to delete this user?")) return;
 
     try {
-    const res = await fetch(`/api/deleteumkm/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/deleteinvestor/${id}`, { method: "DELETE" });
     const data = await res.json();
 
     if (res.ok) {

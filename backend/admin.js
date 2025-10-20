@@ -1,8 +1,16 @@
 const conn = require("./koneksi");
 
-async function tampilUsers(callback) {
+async function tampilUsers(callback, search = "") {
   try {
-    const [results] = await conn.query("SELECT * FROM users");
+    let query = "SELECT * FROM users";
+    let params = [];
+
+    if (search) {
+      query += " WHERE username LIKE ? OR email LIKE ? OR role LIKE ?";
+      params = [`%${search}%`, `%${search}%`, `%${search}%`];
+    }
+
+    const [results] = await conn.query(query, params);
     callback(null, results);
   } catch (err) {
     callback(err, null);

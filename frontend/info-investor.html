@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Investor Information</title>
+    <link rel="stylesheet" href="edit.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Investor Information</h2>
+
+        <form id="infoForm">
+            <label>Company Name:</label>
+            <input type="text" id="company_name"><br><br>
+
+            <label>Investment Focus:</label>
+            <input type="text" id="investment_focus"><br><br>
+
+            <label>Capital:</label>
+            <input type="number" id="capital"><br><br>
+
+            <button type="submit">Save Changes</button>
+            <button type="button" id="backBtn">Back</button>
+        </form>
+    </div>
+
+    <script>
+        const id = new URLSearchParams(window.location.search).get("id");
+
+        async function loadInvestorInfo() {
+        try {
+            const res = await fetch(`/api/investor/${id}`);
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || "Failed to load");
+            document.getElementById("company_name").value = data.company_name || "";
+            document.getElementById("investment_focus").value = data.investment_focus || "";
+            document.getElementById("capital").value = data.capital || "";
+        } catch (err) {
+            alert("Error loading Investor info: " + err.message);
+        }
+        }
+
+        document.getElementById("infoForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+            company_name: document.getElementById("company_name").value,
+            investment_focus: document.getElementById("investment_focus").value,
+            capital: document.getElementById("capital").value
+        };
+
+        try {
+            const res = await fetch(`/api/investor/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if (res.ok) alert("Investor info saved!");
+            else alert("Error: " + (result.error || "Update failed"));
+        } catch (err) {
+            alert("Failed to save: " + err.message);
+        }
+        });
+
+        document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "admin.html";
+
+        });
+
+        loadInvestorInfo();
+    </script>
+</body>
+</html>

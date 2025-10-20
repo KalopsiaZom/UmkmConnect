@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Investor</title>
+  <link rel="stylesheet" href="edit.css">
+</head>
+<body>
+  <div class="form-container">
+    <h1>Add Investor</h1>
+
+    <form id="investorForm">
+      <input type="text" id="company_name" placeholder="Company Name" required><br>
+      <input type="text" id="investment_focus" placeholder="Investment Focus" required><br>
+      <input type="text" id="capital" placeholder="capital" required><br>
+      <button type="submit">Submit</button>
+    </form>
+
+    <h3 id="message" style="display: none;"></h3>
+
+    <p><a href="/dashboard.html">⬅ Back to Dashboard</a></p>
+  </div>
+
+  <script>
+        const form = document.getElementById("investorForm");
+        const message = document.getElementById("message");
+
+        form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const userId = localStorage.getItem("user_id"); // Get user ID from localStorage User where it will be inserted to investor table as user_id foreign key
+
+        if (!userId) {
+            alert("You must log in first!");
+            window.location.href = "/login.html";
+            return;
+        }
+
+        const investorData = {
+            company_name: document.getElementById("company_name").value,
+            investment_focus: document.getElementById("investment_focus").value,
+            capital: document.getElementById("capital").value
+        };
+
+        try {
+            const res = await fetch(`/api/investor/add/${userId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(investorData)
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+            message.textContent = "Investor added successfully!";
+            message.style.color = "green";
+            message.style.display = "block";
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = "/dashboard.html";
+            }, 2000);
+            } else {
+            message.textContent = data.error || "Failed to add Investor!";
+            message.style.color = "red";
+            message.style.display = "block";
+            }
+        } catch (err) {
+            message.textContent = "Server error. Please try again.";
+            message.style.color = "red";
+            message.style.display = "block";
+        }
+        });
+
+  </script>
+</body>
+</html>

@@ -24,6 +24,7 @@
       <div class="buttons">
         <button id="adminBtn" style="display:none;">Admin Panel</button>
         <button id="umkmBtn" style="display:none;">UMKM Test</button>
+        <button id="investorBtn" style="display:none;">Investor Test</button>
         <button id="logoutBtn">Logout</button>
       </div>
     </div>
@@ -75,6 +76,10 @@
       if (role === "umkm") {
         document.getElementById("umkmBtn").style.display = "inline-block";
       }
+
+      if (role === "investor") {
+        document.getElementById("investorBtn").style.display = "inline-block";
+      }
     };
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
@@ -88,6 +93,10 @@
 
     document.getElementById("umkmBtn").addEventListener("click", () => {
       window.location.href = "add-umkm.html";
+    });
+
+    document.getElementById("investorBtn").addEventListener("click", () => {
+      window.location.href = "add-investor.html";
     });
   </script>
 </body>

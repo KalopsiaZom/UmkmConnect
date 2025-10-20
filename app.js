@@ -17,7 +17,10 @@ module.exports = async (req, res) => {
   }
 
   // Getting all users for admin
-  else if (req.method === "GET" && req.url === "/api/users") {
+  else if (req.method === "GET" && req.url.startsWith("/api/users")) {
+    const urlObj = new URL(req.url, `http://${req.headers.host}`);
+    const search = urlObj.searchParams.get("search") || "";
+
     tampilUsers((err, results) => {
       if (err) {
         res.writeHead(500, { "Content-Type": "application/json" });
@@ -25,8 +28,9 @@ module.exports = async (req, res) => {
       }
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(results));
-    });
+    }, search);
   }
+
 
   // Getting user by ID for editing
   else if (req.method === "GET" && req.url.startsWith("/api/user/")) {
@@ -90,6 +94,19 @@ module.exports = async (req, res) => {
     }
     }
 
+    // Deleting Investor by ID
+    else if (req.method === "DELETE" && req.url.startsWith("/api/deleteinvestor/")) {
+    const id = req.url.split("/")[3];
+    try {
+        const [result] = await koneksi.query("DELETE FROM investor WHERE id = ?", [id]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "User deleted successfully", affectedRows: result.affectedRows }));
+    } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+    }
+    }
+
     // Getting all UMKM users for admin
     else if (req.method === "GET" && req.url === "/api/umkmusers") {
         tampilumkmUsers((err, results) => {
@@ -140,20 +157,6 @@ module.exports = async (req, res) => {
         });
         }
 
-
-    // Get Investor info by user ID
-    else if (req.method === "GET" && req.url.startsWith("/api/investor/")) {
-    const id = req.url.split("/")[3];
-    try {
-        const [rows] = await koneksi.query("SELECT * FROM investor WHERE user_id = ?", [id]);
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(rows[0] || {}));
-    } catch (err) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: err.message }));
-    }
-    }
-
     // Update UMKM info by user ID
     else if (req.method === "POST" && req.url.startsWith("/api/umkm/")) {
     const id = req.url.split("/")[3];
@@ -177,6 +180,80 @@ module.exports = async (req, res) => {
         }
     });
     }
+
+    // Get Investor info by user ID
+    else if (req.method === "GET" && req.url.startsWith("/api/investor/")) {
+    const id = req.url.split("/")[3];
+    try {
+        const [rows] = await koneksi.query("SELECT * FROM investor WHERE user_id = ?", [id]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(rows[0] || {}));
+    } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+    }
+    }
+
+    // Getting all Investor users for admin
+    else if (req.method === "GET" && req.url === "/api/investorusers") {
+        tampilInvestorUsers((err, results) => {
+        if (err) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ error: "Database error", details: err.message }));
+        }
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(results));
+        });
+    }   
+    
+    // Update Investor info by user ID
+    else if (req.method === "POST" && req.url.startsWith("/api/investor/")) {
+    const id = req.url.split("/")[3];
+    let body = "";
+
+    req.on("data", chunk => (body += chunk));
+    req.on("end", async () => {
+        try {
+        const { company_name, investment_focus, capital } = JSON.parse(body);
+
+        await koneksi.query(
+            "UPDATE investor SET company_name=?, investment_focus=?, capital=?, WHERE user_id=?",
+            [company_name, investment_focus, capital, id]
+        );
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Investor info updated successfully" }));
+        } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+        }
+    });
+    }
+
+    // Add Investor info by user ID
+    else if (req.method === "POST" && req.url.startsWith("/api/investor/add/")) {
+        const userId = req.url.split("/")[4];
+        let body = "";
+
+        req.on("data", chunk => (body += chunk));
+        req.on("end", async () => {
+            try {
+            const { company_name, investment_focus, capital } = JSON.parse(body);
+
+            await koneksi.query(
+                "INSERT INTO umkm (user_id, company_name, investment_focus, capital) VALUES (?, ?, ?, ?)",
+                [userId, company_name, investment_focus, capital]
+            );
+
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "Investor added successfully" }));
+            } catch (err) {
+            console.error(err);
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        }
 
     else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
     fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
