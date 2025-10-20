@@ -298,6 +298,19 @@ module.exports = async (req, res) => {
     });
     }
 
+else if (req.method === "GET" && req.url === "/api/data") {
+  const dataPath = path.join(__dirname, "backend", "data.json");
+  fs.readFile(dataPath, (err, data) => {
+    if (err) {
+      res.writeHead(500, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ error: "Data not found" }));
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(data);
+  });
+}
+
+
 
   // CSS Files
   else if (req.method === "GET" && req.url.endsWith(".css")) {

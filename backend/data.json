@@ -1,0 +1,13 @@
+{
+  "gdp_growth": 5.1,
+  "umkm_count": 64500000,
+  "unemployment_rate": 5.5,
+  "investment_growth": 6.2,
+  "regions": [
+    { "name": "Jakarta", "umkm": 1200000 },
+    { "name": "Jawa Barat", "umkm": 11000000 },
+    { "name": "Jawa Timur", "umkm": 9500000 },
+    { "name": "Bali", "umkm": 800000 },
+    { "name": "Sulawesi Selatan", "umkm": 600000 }
+  ]
+}

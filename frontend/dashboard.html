@@ -5,14 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
-
-  <!-- Library Chart.js dan Leaflet -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 </head>
-
 <body>
   <div class="sidebar">
     <h2>UMKM Connect</h2>
@@ -23,7 +17,7 @@
 
   <div class="main-content">
     <div class="header">
-      <h1>Material Dashboard</h1>
+      <h1>Regional Economic Dashboard</h1>
       <div class="buttons">
         <button id="adminBtn" style="display:none;">Admin Panel</button>
         <button id="umkmBtn" style="display:none;">UMKM Test</button>
@@ -34,48 +28,36 @@
 
     <div class="dashboard">
       <div class="card orange">
-        <h3>Used Space</h3>
-        <p class="value">49/50 GB</p>
-        <small>Get More Space...</small>
+        <h3>Regional GDP Growth</h3>
+        <p class="value" id="gdpGrowth">Loading...</p>
+        <small>Based on latest data</small>
       </div>
       <div class="card green">
-        <h3>Revenue</h3>
-        <p class="value">$34,245</p>
-        <small>Last 24 Hours</small>
+        <h3>Active UMKM</h3>
+        <p class="value" id="umkmCount">Loading...</p>
+        <small>Small and medium enterprises</small>
       </div>
       <div class="card red">
-        <h3>Fixed Issues</h3>
-        <p class="value">75</p>
-        <small>Tracked from Github</small>
+        <h3>Unemployment Rate</h3>
+        <p class="value" id="unemployment">Loading...</p>
+        <small>Latest regional survey</small>
       </div>
       <div class="card blue">
-        <h3>Followers</h3>
-        <p class="value">+245</p>
-        <small>Just Updated</small>
+        <h3>Investment Growth</h3>
+        <p class="value" id="investmentGrowth">Loading...</p>
+        <small>Year-on-year trend</small>
       </div>
+    </div>
+
+    <div class="chart-section" style="padding: 20px;">
+      <canvas id="umkmChart" height="120"></canvas>
     </div>
 
     <p id="welcome" style="padding: 0 25px;"></p>
-
-    <!-- === VISUALISASI DATA EKONOMI === -->
-    <div class="visual-section">
-      <h2>Data Ekonomi Daerah</h2>
-      <canvas id="growthChart"></canvas>
-      <div id="map"></div>
-
-      <h3 style="margin-top:25px;">Ranking Daerah Berdasarkan Pertumbuhan Ekonomi</h3>
-      <table id="rankingTable">
-        <thead>
-          <tr><th>#</th><th>Daerah</th><th>Pertumbuhan (%)</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button id="downloadBtn">Unduh Data (CSV)</button>
-    </div>
   </div>
 
   <script>
-    window.onload = () => {
+    window.onload = async () => {
       const role = localStorage.getItem("role");
       const username = localStorage.getItem("username");
 
@@ -85,112 +67,54 @@
         return;
       }
 
-      document.getElementById("welcome").textContent =
+      document.getElementById("welcome").textContent = 
         `Welcome, ${username}! You are logged in as ${role}.`;
 
       if (role === "admin") document.getElementById("adminBtn").style.display = "inline-block";
       if (role === "umkm") document.getElementById("umkmBtn").style.display = "inline-block";
       if (role === "investor") document.getElementById("investorBtn").style.display = "inline-block";
 
-      // === Muat data ekonomi dari internet (contoh JSON dummy) ===
-      fetch("https://raw.githubusercontent.com/iqbalsyamil/public-data/main/indonesia_economic_sample.json")
-        .then(res => res.json())
-        .then(data => {
-          renderChart(data);
-          renderMap(data);
-          renderRanking(data);
-          setupDownload(data);
-        })
-        .catch(err => {
-          console.error("Gagal memuat data ekonomi:", err);
+      // Fetch data from backend
+      try {
+        const res = await fetch("/api/data");
+        const data = await res.json();
+
+        document.getElementById("gdpGrowth").textContent = data.gdp_growth + "%";
+        document.getElementById("umkmCount").textContent = data.umkm_count.toLocaleString();
+        document.getElementById("unemployment").textContent = data.unemployment_rate + "%";
+        document.getElementById("investmentGrowth").textContent = data.investment_growth + "%";
+
+        // Chart.js
+        const ctx = document.getElementById("umkmChart").getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: data.regions.map(r => r.name),
+            datasets: [{
+              label: "UMKM Count",
+              data: data.regions.map(r => r.umkm),
+              backgroundColor: "#2196f3"
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+          }
         });
+      } catch (err) {
+        console.error("Error loading data:", err);
+      }
     };
 
-    // === Logout & tombol navigasi ===
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.clear();
       window.location.href = "/login.html";
     });
-    document.getElementById("adminBtn").addEventListener("click", () => {
-      window.location.href = "/admin.html";
-    });
-    document.getElementById("umkmBtn").addEventListener("click", () => {
-      window.location.href = "add-umkm.html";
-    });
-    document.getElementById("investorBtn").addEventListener("click", () => {
-      window.location.href = "add-investor.html";
-    });
 
-    // === Fungsi Visualisasi ===
-    function renderChart(data) {
-      const ctx = document.getElementById("growthChart").getContext("2d");
-      const labels = data.map(d => d.daerah);
-      const values = data.map(d => d.pertumbuhan);
-
-      new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [{
-            label: "Pertumbuhan Ekonomi (%)",
-            data: values,
-            backgroundColor: "rgba(54, 162, 235, 0.6)",
-            borderColor: "rgba(54, 162, 235, 1)",
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    }
-
-    function renderMap(data) {
-      const map = L.map("map").setView([-2.5, 118], 5);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "Map data © OpenStreetMap contributors"
-      }).addTo(map);
-
-      data.forEach(d => {
-        if (d.lat && d.lng) {
-          const circle = L.circle([d.lat, d.lng], {
-            color: "blue",
-            fillColor: "#30f",
-            fillOpacity: 0.5,
-            radius: d.pertumbuhan * 5000
-          }).addTo(map)
-            .bindPopup(`<strong>${d.daerah}</strong><br>Pertumbuhan: ${d.pertumbuhan}%`);
-        }
-      });
-    }
-
-    function renderRanking(data) {
-      const tbody = document.querySelector("#rankingTable tbody");
-      tbody.innerHTML = "";
-      data.sort((a, b) => b.pertumbuhan - a.pertumbuhan);
-      data.forEach((d, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${i + 1}</td><td>${d.daerah}</td><td>${d.pertumbuhan}%</td>`;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function setupDownload(data) {
-      document.getElementById("downloadBtn").addEventListener("click", () => {
-        const header = ["Daerah", "Pertumbuhan (%)", "Lat", "Lng"];
-        const rows = data.map(d => [d.daerah, d.pertumbuhan, d.lat || "", d.lng || ""]);
-        const csv = header.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
-
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "data_ekonomi_daerah.csv";
-        a.click();
-        URL.revokeObjectURL(url);
-      });
-    }
+    document.getElementById("adminBtn").addEventListener("click", () => window.location.href = "/admin.html");
+    document.getElementById("umkmBtn").addEventListener("click", () => window.location.href = "add-umkm.html");
+    document.getElementById("investorBtn").addEventListener("click", () => window.location.href = "add-investor.html");
   </script>
 </body>
 </html>
