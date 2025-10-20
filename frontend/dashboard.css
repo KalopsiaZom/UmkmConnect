@@ -9,7 +9,6 @@ body {
   background-color: #f4f6f8;
   display: flex;
   height: auto;
-  overflow: hidden;
 }
 
 .sidebar {
