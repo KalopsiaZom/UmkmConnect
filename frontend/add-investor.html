@@ -13,6 +13,7 @@
       <input type="text" id="company_name" placeholder="Company Name" required><br>
       <input type="text" id="investment_focus" placeholder="Investment Focus" required><br>
       <input type="text" id="capital" placeholder="capital" required><br>
+      <input type="date" id="investment_date" placeholder="Investment Date" required><br>
       <button type="submit">Submit</button>
     </form>
 
@@ -39,7 +40,8 @@
         const investorData = {
             company_name: document.getElementById("company_name").value,
             investment_focus: document.getElementById("investment_focus").value,
-            capital: document.getElementById("capital").value
+            capital: document.getElementById("capital").value,
+            investment_date: document.getElementById("investment_date").value
         };
 
         try {
