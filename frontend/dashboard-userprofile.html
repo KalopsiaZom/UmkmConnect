@@ -71,7 +71,8 @@
       const userId = localStorage.getItem("user_id");
       const role = localStorage.getItem("role");
       const username = localStorage.getItem("username");
-      console.log("Loaded user_id:", userId, "role:", userRole);
+
+      console.log("Loaded user_id:", userId, "role:", role);
 
       if (!userId || !role) {
         alert("Please log in first!");
@@ -92,51 +93,59 @@
         }
 
         let extraInfo = "";
+
+        // --- If user is UMKM owner ---
         if (role === "umkm") {
-            const res = await fetch(`/api/umkm/${userId}`);
-            const umkmData = await res.json();
+          const res = await fetch(`/api/umkm/${userId}`);
+          const umkmData = await res.json();
 
-        if (Array.isArray(umkmData) && umkmData.length > 0) {
-        extraInfo = `
-            <div class="section-divider"></div>
-            <h3>UMKM Information (${umkmData.length} record${umkmData.length > 1 ? "s" : ""})</h3>
-            ${umkmData.map(u => `
-            <div class="info-group"><span class="info-label">Business Name:</span><span class="info-value">${u.business_name}</span></div>
-            <div class="info-group"><span class="info-label">Owner:</span><span class="info-value">${u.owner}</span></div>
-            <div class="info-group"><span class="info-label">Category:</span><span class="info-value">${u.category}</span></div>
-            <div class="info-group"><span class="info-label">Location:</span><span class="info-value">${u.location}</span></div>
-            <div class="info-group"><span class="info-label">Revenue:</span><span class="info-value">$${u.revenue?.toLocaleString() || 0}</span></div>
-            <div class="info-group"><span class="info-label">Description:</span><span class="info-value">${u.business_desc}</span></div>
-            <hr>
-            `).join("")}
-        `;
-        } else {
-        extraInfo = `
-            <div class="section-divider"></div>
-            <h3>UMKM Information</h3>
-            <p class="no-data">No UMKM data found for this user.</p>
-        `;
-        }
-            const investorData = await res.json();
-
-            if (Array.isArray(investorData) && investorData.length > 0) {
+          if (Array.isArray(umkmData) && umkmData.length > 0) {
             extraInfo = `
-                <div class="section-divider"></div>
-                <h3>Investor Information (${investorData.length} investment${investorData.length > 1 ? "s" : ""})</h3>
-                ${investorData.map(i => `
+              <div class="section-divider"></div>
+              <h3>UMKM Information (${umkmData.length} record${umkmData.length > 1 ? "s" : ""})</h3>
+              ${umkmData.map(u => `
+                <div class="info-group"><span class="info-label">Business Name:</span><span class="info-value">${u.business_name}</span></div>
+                <div class="info-group"><span class="info-label">Owner:</span><span class="info-value">${u.owner}</span></div>
+                <div class="info-group"><span class="info-label">Category:</span><span class="info-value">${u.category}</span></div>
+                <div class="info-group"><span class="info-label">Location:</span><span class="info-value">${u.location}</span></div>
+                <div class="info-group"><span class="info-label">Revenue:</span><span class="info-value">$${u.revenue?.toLocaleString() || 0}</span></div>
+                <div class="info-group"><span class="info-label">Description:</span><span class="info-value">${u.business_desc}</span></div>
+                <hr>
+              `).join("")}
+            `;
+          } else {
+            extraInfo = `
+              <div class="section-divider"></div>
+              <h3>UMKM Information</h3>
+              <p class="no-data">No UMKM data found for this user.</p>
+            `;
+          }
+        }
+
+        // --- If user is an Investor ---
+        else if (role === "investor") {
+          const res = await fetch(`/api/investor/${userId}`);
+          const investorData = await res.json();
+
+          if (Array.isArray(investorData) && investorData.length > 0) {
+            extraInfo = `
+              <div class="section-divider"></div>
+              <h3>Investor Information (${investorData.length} investment${investorData.length > 1 ? "s" : ""})</h3>
+              ${investorData.map(i => `
                 <div class="info-group"><span class="info-label">Company Name:</span><span class="info-value">${i.company_name}</span></div>
                 <div class="info-group"><span class="info-label">Investment Focus:</span><span class="info-value">${i.investment_focus}</span></div>
                 <div class="info-group"><span class="info-label">Capital:</span><span class="info-value">$${i.capital?.toLocaleString() || 0}</span></div>
+                <div class="info-group"><span class="info-label">Date:</span><span class="info-value">${i.investment_date || "N/A"}</span></div>
                 <hr>
-                `).join("")}
+              `).join("")}
             `;
-            } else {
+          } else {
             extraInfo = `
-                <div class="section-divider"></div>
-                <h3>Investor Information</h3>
-                <p class="no-data">No investor data found for this user.</p>
+              <div class="section-divider"></div>
+              <h3>Investor Information</h3>
+              <p class="no-data">No investment data found for this user.</p>
             `;
-            }
+          }
         }
 
         profileDiv.innerHTML = `
