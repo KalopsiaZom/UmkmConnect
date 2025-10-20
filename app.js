@@ -120,17 +120,17 @@ module.exports = async (req, res) => {
         });
     }
 
-    // Get UMKM info by user ID
+    // Get UMKM info by user ID (support multiple records)
     else if (req.method === "GET" && req.url.startsWith("/api/umkm/")) {
-    const id = req.url.split("/")[3];
-    try {
+      const id = req.url.split("/")[3];
+      try {
         const [rows] = await koneksi.query("SELECT * FROM umkm WHERE user_id = ?", [id]);
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(rows[0] || {}));
-    } catch (err) {
+        res.end(JSON.stringify(rows)); // return ALL records
+      } catch (err) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: err.message }));
-    }
+      }
     }
 
     // Add UMKM info by user ID
@@ -182,17 +182,17 @@ module.exports = async (req, res) => {
     });
     }
 
-    // Get Investor info by user ID
+    // Get Investor info by user ID (support multiple records)
     else if (req.method === "GET" && req.url.startsWith("/api/investor/")) {
-    const id = req.url.split("/")[3];
-    try {
+      const id = req.url.split("/")[3];
+      try {
         const [rows] = await koneksi.query("SELECT * FROM investor WHERE user_id = ?", [id]);
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(rows[0] || {}));
-    } catch (err) {
+        res.end(JSON.stringify(rows)); // return ALL records
+      } catch (err) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: err.message }));
-    }
+      }
     }
 
     // Getting all Investor users for admin
