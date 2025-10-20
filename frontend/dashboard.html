@@ -143,7 +143,7 @@
     // ==================== DATA & VISUALISASI ====================
     async function loadData() {
       // kamu bisa ganti URL ini dengan endpoint API BPS atau data.go.id
-      const response = await fetch("data/ekonomi_daerah.json");
+      const response = await fetch("frontend/data/ekonomi_daerah.json");
       const data = await response.json();
       return data;
     }
@@ -182,7 +182,6 @@
       });
     }
 
-    // ======== LEAFLET MAP ========
     function renderMap(data) {
       const map = L.map("mapContainer").setView([-2.5, 118], 5);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -209,7 +208,6 @@
       });
     }
 
-    // ======== RANKING TABLE ========
     function renderRanking(data) {
       const tbody = document.querySelector("#rankingTable tbody");
       const sorted = data.sort((a, b) => b.pertumbuhan_ekonomi - a.pertumbuhan_ekonomi);
@@ -225,7 +223,6 @@
       });
     }
 
-    // ======== DOWNLOAD CSV ========
     document.getElementById("downloadDataBtn").addEventListener("click", () => {
       const header = ["Daerah", "Pertumbuhan Ekonomi", "Pengangguran", "UMKM", "Investasi"];
       const rows = window.globalData.map(d => [
