@@ -186,7 +186,7 @@ module.exports = async (req, res) => {
     else if (req.method === "GET" && req.url.startsWith("/api/investor/")) {
       const id = req.url.split("/")[3];
       try {
-        const [rows] = await koneksi.query("SELECT * FROM investor WHERE user_id = ?", [id]);
+        const [rows] = await koneksi.query("SELECT id, user_id, company_name, investment_focus, capital, DATE_FORMAT(investment_date, '%Y-%m-%d') AS investment_date FROM investments WHERE user_id = ?", [id]);
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(rows)); // return ALL records
       } catch (err) {
