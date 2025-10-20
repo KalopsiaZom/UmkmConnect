@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
+  <!-- Library Chart.js dan Leaflet -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -49,9 +53,35 @@
     </div>
 
     <p id="welcome" style="padding: 0 25px;"></p>
+
+    <!-- ================= VISUALISASI EKONOMI DAERAH ================= -->
+    <div class="visualisation-section" style="display:none;">
+      <h2>📊 Visualisasi Ekonomi Daerah</h2>
+      <p>Menampilkan data ekonomi daerah secara visual dan mudah dipahami.</p>
+
+      <div id="mapContainer" style="height: 400px; margin-bottom: 25px;"></div>
+      <canvas id="chartContainer" height="200"></canvas>
+    </div>
+
+    <!-- ================= RANKING DAERAH ================= -->
+    <div class="ranking-section" style="display:none;">
+      <h2>🏆 Ranking Daerah Berdasarkan Indikator Ekonomi</h2>
+      <table id="rankingTable">
+        <thead>
+          <tr>
+            <th>Daerah</th>
+            <th>Indikator</th>
+            <th>Nilai</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button id="downloadDataBtn">Download Data (CSV)</button>
+    </div>
   </div>
 
   <script>
+    // ==================== LOGIN ROLE HANDLING ====================
     window.onload = () => {
       const role = localStorage.getItem("role");
       const username = localStorage.getItem("username");
@@ -62,22 +92,37 @@
         return;
       }
 
-      document.getElementById("welcome").textContent = 
+      document.getElementById("welcome").textContent =
         `Welcome, ${username}! You are logged in as ${role}.`;
 
       if (role === "admin") {
         document.getElementById("adminBtn").style.display = "inline-block";
+        document.querySelector('.visualisation-section').style.display = 'block';
+        document.querySelector('.ranking-section').style.display = 'block';
       }
 
       if (role === "umkm") {
         document.getElementById("umkmBtn").style.display = "inline-block";
+        document.querySelector('.visualisation-section').style.display = 'block';
+        document.querySelector('.ranking-section').style.display = 'block';
       }
 
       if (role === "investor") {
         document.getElementById("investorBtn").style.display = "inline-block";
+        document.querySelector('.visualisation-section').style.display = 'block';
+        document.querySelector('.ranking-section').style.display = 'block';
       }
+
+      // Load data dan render visualisasi
+      loadData().then(data => {
+        renderMap(data);
+        renderChart(data);
+        renderRanking(data);
+        window.globalData = data;
+      });
     };
 
+    // ==================== BUTTON EVENTS ====================
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.clear();
       window.location.href = "/login.html";
@@ -93,6 +138,109 @@
 
     document.getElementById("investorBtn").addEventListener("click", () => {
       window.location.href = "add-investor.html";
+    });
+
+    // ==================== DATA & VISUALISASI ====================
+    async function loadData() {
+      // kamu bisa ganti URL ini dengan endpoint API BPS atau data.go.id
+      const response = await fetch("data/ekonomi_daerah.json");
+      const data = await response.json();
+      return data;
+    }
+
+    // ======== CHART.JS ========
+    function renderChart(data) {
+      const ctx = document.getElementById('chartContainer');
+      const labels = data.map(d => d.daerah);
+      const growth = data.map(d => d.pertumbuhan_ekonomi);
+      const unemployment = data.map(d => d.pengangguran);
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Pertumbuhan Ekonomi (%)",
+              data: growth,
+              backgroundColor: "rgba(75, 192, 192, 0.7)",
+            },
+            {
+              label: "Tingkat Pengangguran (%)",
+              data: unemployment,
+              backgroundColor: "rgba(255, 99, 132, 0.7)",
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: 'Pertumbuhan Ekonomi vs Pengangguran' }
+          }
+        }
+      });
+    }
+
+    // ======== LEAFLET MAP ========
+    function renderMap(data) {
+      const map = L.map("mapContainer").setView([-2.5, 118], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 10,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      data.forEach(region => {
+        L.circleMarker([region.lat, region.lng], {
+          radius: region.investasi / 1000,
+          fillColor: "blue",
+          color: "#000",
+          weight: 1,
+          fillOpacity: 0.5
+        })
+        .addTo(map)
+        .bindPopup(
+          `<b>${region.daerah}</b><br>
+          Pertumbuhan: ${region.pertumbuhan_ekonomi}%<br>
+          Pengangguran: ${region.pengangguran}%<br>
+          UMKM: ${region.jumlah_umkm}<br>
+          Investasi: ${region.investasi} M`
+        );
+      });
+    }
+
+    // ======== RANKING TABLE ========
+    function renderRanking(data) {
+      const tbody = document.querySelector("#rankingTable tbody");
+      const sorted = data.sort((a, b) => b.pertumbuhan_ekonomi - a.pertumbuhan_ekonomi);
+      tbody.innerHTML = "";
+      sorted.forEach(region => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${region.daerah}</td>
+          <td>Pertumbuhan Ekonomi</td>
+          <td>${region.pertumbuhan_ekonomi}%</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ======== DOWNLOAD CSV ========
+    document.getElementById("downloadDataBtn").addEventListener("click", () => {
+      const header = ["Daerah", "Pertumbuhan Ekonomi", "Pengangguran", "UMKM", "Investasi"];
+      const rows = window.globalData.map(d => [
+        d.daerah, d.pertumbuhan_ekonomi, d.pengangguran, d.jumlah_umkm, d.investasi
+      ]);
+
+      const csv = [header.join(","), ...rows.map(r => r.join(","))].join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "data_ekonomi_daerah.csv";
+      link.click();
+      URL.revokeObjectURL(url);
     });
   </script>
 </body>
