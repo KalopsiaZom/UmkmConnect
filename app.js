@@ -366,3 +366,16 @@ else if (req.method === "GET" && req.url.includes(".html")) {
     });
   }
 };
+
+if (require.main === module) {
+  const http = require('http');
+  const PORT = 3000;
+
+  const server = http.createServer((req, res) => {
+    module.exports(req, res);
+  });
+
+  server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
