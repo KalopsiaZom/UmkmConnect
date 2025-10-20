@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="dashboard-umkmlist.css">
+  <style>
+    .profile-container {
+      margin: 30px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px 35px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+    }
+
+    .profile-container h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .info-group {
+      margin-bottom: 15px;
+    }
+
+    .info-label {
+      font-weight: bold;
+      color: #444;
+    }
+
+    .info-value {
+      margin-left: 10px;
+      color: #666;
+    }
+
+    .section-divider {
+      margin: 25px 0;
+      border-top: 1px solid #ddd;
+    }
+
+    .no-data {
+      color: #999;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>UMKM Connect</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="#" class="active">User Profile</a>
+    <a href="dashboard-umkmlist.html">UMKM List</a>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <h1>User Profile</h1>
+      <div class="buttons">
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div id="profile" class="profile-container">
+      <p>Loading profile...</p>
+    </div>
+  </div>
+
+  <script>
+    window.onload = async () => {
+      const userId = localStorage.getItem("user_id");
+      const role = localStorage.getItem("role");
+      const username = localStorage.getItem("username");
+
+      if (!userId || !role) {
+        alert("Please log in first!");
+        window.location.href = "/login.html";
+        return;
+      }
+
+      const profileDiv = document.getElementById("profile");
+
+      try {
+        // Fetch main user info
+        const userRes = await fetch(`/api/user/${userId}`);
+        const userData = await userRes.json();
+
+        if (!userData || !userData.username) {
+          profileDiv.innerHTML = `<p class="no-data">User data not found.</p>`;
+          return;
+        }
+
+        let extraInfo = "";
+        if (role === "umkm") {
+          const res = await fetch(`/api/umkm/${userId}`);
+          const umkmData = await res.json();
+
+          extraInfo = `
+            <div class="section-divider"></div>
+            <h3>UMKM Information</h3>
+            ${umkmData.business_name ? `
+              <div class="info-group"><span class="info-label">Business Name:</span><span class="info-value">${umkmData.business_name}</span></div>
+              <div class="info-group"><span class="info-label">Owner:</span><span class="info-value">${umkmData.owner}</span></div>
+              <div class="info-group"><span class="info-label">Category:</span><span class="info-value">${umkmData.category}</span></div>
+              <div class="info-group"><span class="info-label">Location:</span><span class="info-value">${umkmData.location}</span></div>
+              <div class="info-group"><span class="info-label">Revenue:</span><span class="info-value">$${umkmData.revenue?.toLocaleString() || 0}</span></div>
+              <div class="info-group"><span class="info-label">Description:</span><span class="info-value">${umkmData.business_desc}</span></div>
+            ` : `<p class="no-data">No UMKM data found for this user.</p>`}
+          `;
+        } 
+        else if (role === "investor") {
+          const res = await fetch(`/api/investor/${userId}`);
+          const investorData = await res.json();
+
+          extraInfo = `
+            <div class="section-divider"></div>
+            <h3>Investor Information</h3>
+            ${investorData.company_name ? `
+              <div class="info-group"><span class="info-label">Company Name:</span><span class="info-value">${investorData.company_name}</span></div>
+              <div class="info-group"><span class="info-label">Investment Focus:</span><span class="info-value">${investorData.investment_focus}</span></div>
+              <div class="info-group"><span class="info-label">Capital:</span><span class="info-value">$${investorData.capital?.toLocaleString() || 0}</span></div>
+            ` : `<p class="no-data">No investor data found for this user.</p>`}
+          `;
+        }
+
+        profileDiv.innerHTML = `
+          <h2>${username}'s Profile</h2>
+          <div class="info-group"><span class="info-label">Username:</span><span class="info-value">${userData.username}</span></div>
+          <div class="info-group"><span class="info-label">Email:</span><span class="info-value">${userData.email}</span></div>
+          <div class="info-group"><span class="info-label">Role:</span><span class="info-value">${userData.role}</span></div>
+          ${extraInfo}
+        `;
+      } catch (err) {
+        console.error(err);
+        profileDiv.innerHTML = `<p class="no-data">Failed to load profile. Please try again later.</p>`;
+      }
+    };
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "/login.html";
+    });
+  </script>
+</body>
+</html>
