@@ -27,7 +27,7 @@
       </div>
 
       <div class="topbar-actions">
-        <button class="btn-blue">+ Add User</button>
+        <button class="btn-blue" id="addUserBtn">+ Add User</button>
         <button class="btn-blue" id="backBtn">Back</button>
       </div>
     </header>
@@ -60,6 +60,11 @@
   document.getElementById("backBtn").addEventListener("click", () => {
     window.location.href = "/dashboard.html";
   });
+
+  document.getElementById("addUserBtn").addEventListener("click", () => {
+    window.location.href = "/add-user.html";
+  });
+
 
   document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.querySelector("tbody");

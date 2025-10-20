@@ -258,6 +258,34 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Add new user for add-user.html
+    else if (req.method === "POST" && req.url === "/api/adduser") {
+      let body = "";
+
+      req.on("data", chunk => (body += chunk));
+      req.on("end", async () => {
+        try {
+          const { username, email, password, role } = JSON.parse(body);
+
+          if (!username || !email || !password || !role) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ error: "Missing required fields" }));
+          }
+
+          const [result] = await koneksi.query(
+            "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
+            [username, email, password, role]
+          );
+
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "User added successfully", id: result.insertId }));
+        } catch (err) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+    }
+
 
     else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
     fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
