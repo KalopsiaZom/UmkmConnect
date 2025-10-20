@@ -53,6 +53,7 @@ select {
   outline: none;
   transition: 0.3s;
   font-size: 14px;
+  overflow-x: hidden;
 }
 
 input[type="text"]:focus {
