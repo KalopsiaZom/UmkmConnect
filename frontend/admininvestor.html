@@ -40,6 +40,7 @@
             <th>Company Name</th>
             <th>Investment Focus</th>
             <th>Capital</th>
+            <th>Investment Date</th>
             <th style="text-align: center;">Action</th>
           </tr>
         </thead>
@@ -77,6 +78,7 @@
                 <td>${user.company_name || "-"}</td>
                 <td>${user.investment_focus || "-"}</td>
                 <td>${user.capital || "-"}</td>
+                <td>${user.investment_date || "-"}</td>
                 <td class="action-buttons">
                     <button class="btn-green" onclick="window.location.href='info-investor.html?id=${user.user_id}'">Edit</button>
                     <button class="btn-red" onclick="deleteUser(${user.id})">Delete</button>

@@ -215,12 +215,12 @@ module.exports = async (req, res) => {
       req.on("data", chunk => (body += chunk));
       req.on("end", async () => {
         try {
-          const { company_name, investment_focus, capital } = JSON.parse(body);
+          const { company_name, investment_focus, capital, investment_date } = JSON.parse(body);
 
           // NOTE: removed the extra comma before WHERE
           await koneksi.query(
-            "UPDATE investor SET company_name=?, investment_focus=?, capital=? WHERE user_id=?",
-            [company_name, investment_focus, capital, id]
+            "UPDATE investor SET company_name=?, investment_focus=?, capital=?, investment_date=? WHERE user_id=?",
+            [company_name, investment_focus, capital, investment_date, id]
           );
 
           res.writeHead(200, { "Content-Type": "application/json" });
@@ -241,11 +241,11 @@ module.exports = async (req, res) => {
       req.on("data", chunk => (body += chunk));
       req.on("end", async () => {
         try {
-          const { company_name, investment_focus, capital } = JSON.parse(body);
+          const { company_name, investment_focus, capital, investment_date } = JSON.parse(body);
 
           await koneksi.query(
-            "INSERT INTO investor (user_id, company_name, investment_focus, capital) VALUES (?, ?, ?, ?)",
-            [userId, company_name, investment_focus, capital]
+            "INSERT INTO investor (user_id, company_name, investment_focus, capital, investment_date) VALUES (?, ?, ?, ?, ?)",
+            [userId, company_name, investment_focus, capital, investment_date]
           );
 
           res.writeHead(200, { "Content-Type": "application/json" });

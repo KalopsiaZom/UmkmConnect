@@ -19,6 +19,9 @@
             <label>Capital:</label>
             <input type="number" id="capital"><br><br>
 
+            <label>Investment Date:</label>
+            <input type="date" id="investment_date"><br><br>
+
             <button type="submit">Save Changes</button>
             <button type="button" id="backBtn">Back</button>
         </form>
@@ -36,6 +39,7 @@
             document.getElementById("company_name").value = data.company_name || "";
             document.getElementById("investment_focus").value = data.investment_focus || "";
             document.getElementById("capital").value = data.capital || "";
+            document.getElementById("investment_date").value = data.investment_date || "";
         } catch (err) {
             alert("Error loading Investor info: " + err.message);
         }
@@ -46,7 +50,8 @@
         const payload = {
             company_name: document.getElementById("company_name").value,
             investment_focus: document.getElementById("investment_focus").value,
-            capital: document.getElementById("capital").value
+            capital: document.getElementById("capital").value,
+            investment_date: document.getElementById("investment_date").value
         };
 
         try {
