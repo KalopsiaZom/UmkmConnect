@@ -207,54 +207,57 @@ module.exports = async (req, res) => {
         });
     }   
     
-    // Update Investor info by user ID
-    else if (req.method === "POST" && req.url.startsWith("/api/investor/")) {
-    const id = req.url.split("/")[3];
-    let body = "";
+    // Update Investor info by user ID (exclude the "add" route)
+    else if (req.method === "POST" && req.url.startsWith("/api/investor/") && !req.url.startsWith("/api/investor/add/")) {
+      const id = req.url.split("/")[3];
+      let body = "";
 
-    req.on("data", chunk => (body += chunk));
-    req.on("end", async () => {
+      req.on("data", chunk => (body += chunk));
+      req.on("end", async () => {
         try {
-        const { company_name, investment_focus, capital } = JSON.parse(body);
+          const { company_name, investment_focus, capital } = JSON.parse(body);
 
-        await koneksi.query(
-            "UPDATE investor SET company_name=?, investment_focus=?, capital=?, WHERE user_id=?",
+          // NOTE: removed the extra comma before WHERE
+          await koneksi.query(
+            "UPDATE investor SET company_name=?, investment_focus=?, capital=? WHERE user_id=?",
             [company_name, investment_focus, capital, id]
-        );
+          );
 
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Investor info updated successfully" }));
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "Investor info updated successfully" }));
         } catch (err) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: err.message }));
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: err.message }));
         }
-    });
+      });
     }
+
 
     // Add Investor info by user ID
     else if (req.method === "POST" && req.url.startsWith("/api/investor/add/")) {
-        const userId = req.url.split("/")[4];
-        let body = "";
+      const userId = req.url.split("/")[4];
+      let body = "";
 
-        req.on("data", chunk => (body += chunk));
-        req.on("end", async () => {
-            try {
-            const { company_name, investment_focus, capital } = JSON.parse(body);
+      req.on("data", chunk => (body += chunk));
+      req.on("end", async () => {
+        try {
+          const { company_name, investment_focus, capital } = JSON.parse(body);
 
-            await koneksi.query(
-                "INSERT INTO umkm (user_id, company_name, investment_focus, capital) VALUES (?, ?, ?, ?)",
-                [userId, company_name, investment_focus, capital]
-            );
+          await koneksi.query(
+            "INSERT INTO investor (user_id, company_name, investment_focus, capital) VALUES (?, ?, ?, ?)",
+            [userId, company_name, investment_focus, capital]
+          );
 
-            res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Investor added successfully" }));
-            } catch (err) {
-            console.error(err);
-            res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: err.message }));
-            }
-        });
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "Investor added successfully" }));
+        } catch (err) {
+          console.error(err);
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: err.message }));
         }
+      });
+    }
+
 
     else if (req.method === "GET" && req.url.startsWith("/edit.html")) {
     fs.readFile(path.join(__dirname, 'frontend', 'edit.html'), (err, html) => {
