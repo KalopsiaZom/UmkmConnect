@@ -4,6 +4,7 @@ const registerUser = require('./backend/register');
 const loginUser = require('./backend/login');
 const tampilUsers = require('./backend/admin');
 const tampilumkmUsers = require('./backend/adminumkm');
+const tampilInvestorUsers = require('./backend/admininvestor');
 const koneksi = require('./backend/koneksi');
 
 module.exports = async (req, res) => {
