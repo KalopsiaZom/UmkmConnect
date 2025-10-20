@@ -53,8 +53,14 @@ select {
   outline: none;
   transition: 0.3s;
   font-size: 14px;
-  overflow-x: hidden;
 }
+
+textarea {
+  resize: vertical;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 
 input[type="text"]:focus {
   border-color: #6c63ff;
