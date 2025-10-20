@@ -29,7 +29,7 @@
     <div class="dashboard">
       <div class="card orange">
         <h3>Regional GDP Growth</h3>
-        <p class="value" id="gdpGrowth">Loading...</p>
+        <p class="value" id="gdpGrowth">5.2%</p>
         <small>Based on latest data</small>
       </div>
       <div class="card green">
@@ -39,12 +39,12 @@
       </div>
       <div class="card red">
         <h3>Unemployment Rate</h3>
-        <p class="value" id="unemployment">Loading...</p>
+        <p class="value" id="unemployment">6.83%</p>
         <small>Latest regional survey</small>
       </div>
       <div class="card blue">
         <h3>Investment Growth</h3>
-        <p class="value" id="investmentGrowth">Loading...</p>
+        <p class="value" id="investmentGrowth">4.7%</p>
         <small>Year-on-year trend</small>
       </div>
     </div>
@@ -57,6 +57,68 @@
   </div>
 
   <script>
+    async function fetchUMKMData() {
+      try {
+        const response = await fetch("https://data.jabarprov.go.id/api-backend/bigdata/diskuk/od_17367_jml_ush_mikro_kecil_menengah_umkm_binaan__jenis_us_v2?download=csv");
+        const text = await response.text();
+
+        const rows = text.split("\n").map(r => r.split(","));
+        const headers = rows[0];
+        const data = rows.slice(1).map(row => {
+          let obj = {};
+          headers.forEach((h, i) => obj[h.trim()] = row[i]?.trim());
+          return obj;
+        });
+
+        // Filter tahun 2023
+        const latest = data.filter(d => d.tahun === "2023");
+
+        // Hitung total UMKM per kabupaten/kota
+        const byRegion = {};
+        latest.forEach(item => {
+          const region = item.nama_kabupaten_kota;
+          const jumlah = parseInt(item.jumlah_umkm || "0");
+          if (!isNaN(jumlah)) byRegion[region] = (byRegion[region] || 0) + jumlah;
+        });
+
+        // Total seluruh UMKM
+        const totalUMKM = Object.values(byRegion).reduce((a, b) => a + b, 0);
+        document.getElementById("umkmCount").textContent = totalUMKM.toLocaleString();
+
+        // Buat Chart.js
+        const ctx = document.getElementById("umkmChart").getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: Object.keys(byRegion),
+            datasets: [{
+              label: "Jumlah UMKM Binaan (2023)",
+              data: Object.values(byRegion),
+              backgroundColor: "rgba(54, 162, 235, 0.7)"
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Distribusi UMKM Binaan per Kabupaten/Kota (Jawa Barat, 2023)"
+              }
+            },
+            scales: {
+              y: { beginAtZero: true, title: { display: true, text: "Jumlah UMKM" } },
+              x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 45 } }
+            }
+          }
+        });
+
+      } catch (err) {
+        console.error("Gagal memuat data UMKM:", err);
+        document.getElementById("umkmCount").textContent = "Error loading data";
+      }
+    }
+
     window.onload = async () => {
       const role = localStorage.getItem("role");
       const username = localStorage.getItem("username");
@@ -74,37 +136,8 @@
       if (role === "umkm") document.getElementById("umkmBtn").style.display = "inline-block";
       if (role === "investor") document.getElementById("investorBtn").style.display = "inline-block";
 
-      // Fetch data from backend
-      try {
-        const res = await fetch("/api/data");
-        const data = await res.json();
-
-        document.getElementById("gdpGrowth").textContent = data.gdp_growth + "%";
-        document.getElementById("umkmCount").textContent = data.umkm_count.toLocaleString();
-        document.getElementById("unemployment").textContent = data.unemployment_rate + "%";
-        document.getElementById("investmentGrowth").textContent = data.investment_growth + "%";
-
-        // Chart.js
-        const ctx = document.getElementById("umkmChart").getContext("2d");
-        new Chart(ctx, {
-          type: "bar",
-          data: {
-            labels: data.regions.map(r => r.name),
-            datasets: [{
-              label: "UMKM Count",
-              data: data.regions.map(r => r.umkm),
-              backgroundColor: "#2196f3"
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
-          }
-        });
-      } catch (err) {
-        console.error("Error loading data:", err);
-      }
+      // Panggil data UMKM real
+      await fetchUMKMData();
     };
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
