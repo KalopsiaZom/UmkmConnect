@@ -32,7 +32,7 @@
 
         async function loadInvestorInfo() {
         try {
-            const res = await fetch(`/api/investor/${id}`);
+            const res = await fetch(`/api/investorLoad/${id}`);
             const data = await res.json() || {};
 
             if (!res.ok) throw new Error(data.error || "Failed to load");
