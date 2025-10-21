@@ -44,12 +44,16 @@
             const data = await res.json();
 
             if (!res.ok) throw new Error(data.error || "Failed to load");
-            document.getElementById("business_name").value = data.business_name || "";
-            document.getElementById("business_desc").value = data.business_desc || "";
-            document.getElementById("location").value = data.location || "";
-            document.getElementById("owner").value = data.owner || "";
-            document.getElementById("category").value = data.category || "";
-            document.getElementById("revenue").value = data.revenue || "";
+
+            const info = data[0];
+            if(info){
+                document.getElementById("business_name").value = data.business_name || "";
+                document.getElementById("business_desc").value = data.business_desc || "";
+                document.getElementById("location").value = data.location || "";
+                document.getElementById("owner").value = data.owner || "";
+                document.getElementById("category").value = data.category || "";
+                document.getElementById("revenue").value = data.revenue || "";
+            }
         } catch (err) {
             alert("Error loading UMKM info: " + err.message);
         }
