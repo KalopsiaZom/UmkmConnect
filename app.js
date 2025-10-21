@@ -133,6 +133,19 @@ module.exports = async (req, res) => {
       }
     }
 
+    // Getting user by ID for edit UMKM
+    else if (req.method === "GET" && req.url.startsWith("/api/umkmLoad/")) {
+      const id = req.url.split("/")[3];
+      try {
+        const [rows] = await koneksi.query("SELECT * FROM umkm WHERE id = ?", [id]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(rows[0]));
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    }
+
     // Add UMKM info by user ID
     else if (req.method === "POST" && req.url.startsWith("/api/umkm/add/")) {
         const userId = req.url.split("/")[4];
