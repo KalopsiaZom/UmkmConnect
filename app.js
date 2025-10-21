@@ -137,9 +137,10 @@ module.exports = async (req, res) => {
     else if (req.method === "GET" && req.url.startsWith("/api/umkmLoad/")) {
       const id = req.url.split("/")[3];
       try {
-        const [rows] = await koneksi.query("SELECT * FROM umkm WHERE id = ?", [id]);
+        const [rows] = await koneksi.query("SELECT * FROM umkm WHERE user_id = ?", [id]);
+        const data = rows[0] || {}; // prevent undefined response
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(rows[0]));
+        res.end(JSON.stringify(data));
       } catch (err) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: err.message }));
