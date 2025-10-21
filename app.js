@@ -133,7 +133,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Getting user by ID for edit UMKM
+    // Getting UMKM by ID for edit UMKM
     else if (req.method === "GET" && req.url.startsWith("/api/umkmLoad/")) {
       const id = req.url.split("/")[3];
       try {
@@ -203,6 +203,20 @@ module.exports = async (req, res) => {
         const [rows] = await koneksi.query("SELECT id, user_id, company_name, investment_focus, capital, DATE_FORMAT(investment_date, '%Y-%m-%d') AS investment_date FROM investor WHERE user_id = ?", [id]);
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(rows)); // return ALL records
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    }
+
+    // Getting Investor by ID for edit investor
+    else if (req.method === "GET" && req.url.startsWith("/api/investorLoad/")) {
+      const id = req.url.split("/")[3];
+      try {
+        const [rows] = await koneksi.query("SELECT * FROM investor WHERE user_id = ?", [id]);
+        const data = rows[0] || {}; // prevent undefined response
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(data));
       } catch (err) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: err.message }));
