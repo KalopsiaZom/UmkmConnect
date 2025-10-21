@@ -28,7 +28,7 @@
             <label>Revenue:</label>
             <input type="number" id="revenue"><br><br>
 
-            <button type="button" id="viewLocation">View Location</button><br><br>
+            <!--<button type="button" id="viewLocation">View Location</button><br><br>-->
 
             <button type="submit">Save Changes</button>
             <button type="button" id="backBtn">Back</button>
@@ -82,11 +82,11 @@
         }
         });
 
-        document.getElementById("viewLocation").addEventListener("click", () => {
+        /*document.getElementById("viewLocation").addEventListener("click", () => {
         const url = document.getElementById("location").value;
         if (url) window.open(url, "_blank");
         else alert("No location URL provided");
-        });
+        });*/
 
         document.getElementById("backBtn").addEventListener("click", () => {
         window.location.href = "admin.html";
